@@ -13,6 +13,7 @@
 		"deploy": "firebase deploy"
 	},
 	"dependencies": {
+		"fallbackjs": "^1.1.8",
 		"firebase": "^6.6.0",
 		"preact": "^8.5.2",
 		"preact-render-to-string": "^4.1.0"
