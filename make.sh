@@ -1,1 +1,1 @@
-node todo.js && bash -ic "./make_views.sh && ./make_functions.sh" && ./serving.sh
+node todo.js && ./make_views.sh && ./make_functions.sh && ./serving.sh
