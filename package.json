@@ -1,0 +1,29 @@
+{
+	"name": "aj-bank",
+	"version": "0.0.1",
+	"description": "Fixing some problems that banks have",
+	"main": "index.js",
+	"keywords": [],
+	"author": "Aj",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"serve": "firebase serve",
+		"dev": "preact watch",
+		"deploy": "firebase deploy"
+	},
+	"dependencies": {
+		"firebase": "^6.6.0",
+		"preact": "^8.5.2",
+		"preact-render-to-string": "^4.1.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.6.0",
+		"@babel/core": "^7.6.0",
+		"@babel/plugin-transform-react-jsx": "^7.3.0",
+		"@babel/preset-env": "^7.6.0",
+		"firebase-functions": "^3.2.0",
+		"hyperscript-helpers": "^3.0.3",
+		"validator": "^11.1.0"
+	}
+}
