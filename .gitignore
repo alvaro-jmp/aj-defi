@@ -72,3 +72,7 @@ aj-bank-firebase-adminsdk-service-account.json
 
 # config .vscode folder
 /.vscode
+
+# file config_fb.js
+/src/model/config_fb.js
+/function/model/config_fb.js
