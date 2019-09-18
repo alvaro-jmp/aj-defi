@@ -7,10 +7,6 @@ exports["default"] = void 0;
 
 var _preact = require("preact");
 
-var _test_component = _interopRequireDefault(require("./components/test_component"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42,7 +38,8 @@ var _require = require('hyperscript-helpers')(_preact.h),
     label = _require.label,
     input = _require.input,
     button = _require.button,
-    br = _require.br;
+    br = _require.br; // import test_component from './components/test_component'
+
 
 var v_home =
 /*#__PURE__*/
@@ -60,18 +57,45 @@ function (_Component) {
     value: function render(props, state) {
       return div({
         "class": 'w3-container'
-      }, [h1({}, ['aj-bank']), (0, _preact.h)(_test_component["default"])]);
+      }, [div({
+        "class": 'w3-content w3-center',
+        style: {
+          width: '500px'
+        }
+      }, [h1({
+        style: {
+          'font-family': '\'Manjari\', sans-serif'
+        }
+      }, ['aj-bank']), h1({}, ['usuario']), input({
+        "class": 'w3-input'
+      }, []), h1({}, ['contraseña']), input({
+        "class": 'w3-input'
+      }, [])])]);
     }
   }, {
     key: "componentWillMount",
-    value: function componentWillMount() {
-      // I do this, due to that exists certain fails to load js, css, etc from cdn in Venezuela
-      fallback.load({
-        firebase: ["https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js", "".concat(window.location.origin, "/assets/js/firebase-app-6.6.1.js")],
-        'firebase.auth': ['https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js', "".concat(window.location.origin, "/assets/js/firebase-auth-6.6.1.js")],
-        'firebase.database': ['https://www.gstatic.com/firebasejs/6.6.1/firebase-database.js', "".concat(window.location.origin, "/assets/js/firebase-database-6.6.1.js")],
-        'firebase.firestore': ['https://www.gstatic.com/firebasejs/6.6.1/firebase-firestore.js', "".concat(window.location.origin, "/assets/js/firebase-firestore-6.6.1.js")]
-      });
+    value: function componentWillMount() {// I do this, due to that exists certain fails to load js, css, etc from cdn in Venezuela
+      // fallback.load({
+      //   firebase: [
+      //     `https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js`,
+      //     `${window.location.origin}/assets/js/firebase-app-6.6.1.js`
+      //   ]
+      //   ,
+      //   'firebase.auth': [
+      //     'https://www.gstatic.com/firebasejs/6.6.1/firebase-auth.js',
+      //     `${window.location.origin}/assets/js/firebase-auth-6.6.1.js`
+      //   ]
+      //   ,
+      //   'firebase.database': [
+      //     'https://www.gstatic.com/firebasejs/6.6.1/firebase-database.js',
+      //     `${window.location.origin}/assets/js/firebase-database-6.6.1.js`
+      //   ]
+      //   ,
+      //   'firebase.firestore': [
+      //     'https://www.gstatic.com/firebasejs/6.6.1/firebase-firestore.js',
+      //     `${window.location.origin}/assets/js/firebase-firestore-6.6.1.js`
+      //   ]
+      // })
     }
   }, {
     key: "componentDidMount",
