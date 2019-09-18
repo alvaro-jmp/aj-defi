@@ -63,14 +63,18 @@ function (_Component) {
           width: '500px'
         }
       }, [h1({
+        "class": 'w3-jumbo',
         style: {
           'font-family': '\'Manjari\', sans-serif'
         }
-      }, ['aj-bank']), h1({}, ['usuario']), input({
+      }, ['aj-bank']), h1({}, ['Email']), input({
         "class": 'w3-input'
-      }, []), h1({}, ['contraseña']), input({
+      }, []), h1({}, ['Password']), input({
         "class": 'w3-input'
-      }, [])])]);
+      }, []), button({
+        "class": 'w3-button w3-block w3-blue w3-hover-teal w3-section w3-padding w3-large',
+        type: 'button'
+      }, ['Sign in'])])]);
     }
   }, {
     key: "componentWillMount",
