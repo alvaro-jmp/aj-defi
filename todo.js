@@ -19,10 +19,15 @@ console.log('\nBuilding tasks ...\n---------->')
 function building_views() {
 
   function preact_cli(file, folder, build_folder = file.substring(lengh_init, leng_end(file))) {
+
+    const delete_index_js = `if [ -f ${view_path_es6}/${folder}/index.js ]; then rm -f ${view_path_es6}/${folder}/index.js; fi`
+
     return (
       `#Convert ${file} to common js incorporating preact for to use in client side rendering
 
-cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && preact build --src ${view_path_es6}/${folder} --dest temp/${build_folder} --no-prerender --service-worker false --clean true && cp -v temp/${build_folder}/bundle*.js temp/res/js-views/${file} && rm -f ${view_path_es6}/${folder}/index.js && if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat - temp/res/js-views/${file} > temp00 && mv temp00 temp/res/js-views/${file} ; fi`
+${delete_index_js} && cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && preact build --src ${view_path_es6}/${folder} --dest temp/${build_folder} --no-prerender --service-worker false --clean true && cp -v temp/${build_folder}/bundle*.js temp/res/js-views/${file} && if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat - temp/res/js-views/${file} > temp00 && mv temp00 temp/res/js-views/${file} ; fi && ${delete_index_js}
+
+`
     )
   }
 
@@ -37,7 +42,7 @@ cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && 
         return (
           fs.readdirSync(`${view_path_es6}/${dir.name}`, settings)
             .filter(file => !file.isDirectory())
-            .filter(file => (validator.matches(file.name, /^.+\.js$/)))
+            .filter(file => (validator.matches(file.name, /^.+\.js$/) && !validator.matches(file.name, /^index.js$/)))
             .map(file => preact_cli(file.name, dir.name))
         )
       }
@@ -73,10 +78,7 @@ rm -rf public/index.html`
   function views_to_es5() {
     return `#Convert views to es5 for use in server side rendering in controller
 
-${exec_babel} ${view_path_es6} --out-dir ${view_path_es5} --ignore "./src/node_modules"  --presets=@babel/preset-env
-
-#if folder view-es5 exists, copy its content in function
-if [ "$(find ${view_path_es5} -type f -name "*.js" 2>/dev/null)" ] ; then rm -rf functions/view && mkdir -p ${fun_view_path_es5} && cp -rv ${view_path_es5}/* ${fun_view_path_es5}/ ; fi`
+${exec_babel} ${view_path_es6} --out-dir ${view_path_es5} --ignore "./src/node_modules"  --presets=@babel/preset-env`
   }
 
   return `#!/bin/bash
@@ -101,7 +103,16 @@ function building_functions() {
 
 printf "\x5cnTranspilate Functions ...\x5cn---------->\x5cn"
 
-${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6}","${view_path_es5}" --presets=@babel/preset-env`
+#removing older files and folders except node_modules, package.json, package-lock.json
+
+cd functions && rm -rf !(node_modules|package.json|package-lock.json) && cd ..
+
+${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6}","${view_path_es5}" --presets=@babel/preset-env
+
+cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/
+
+#if folder ${view_path_es5} exists, copy its content in function
+if [ "$(find ${view_path_es5} -type f -name "*.js" 2>/dev/null)" ] ; then rm -rf functions/view && mkdir -p ${fun_view_path_es5} && cp -rv ${view_path_es5}/* ${fun_view_path_es5}/ ; fi`
 }
 
 ///////
@@ -118,8 +129,6 @@ firebase serve --only hosting,functions --port 5000 --host 0.0.0.0`
 // CODE ETC
 // --------->
 
-const make_all = './make_views.sh && ./make_functions.sh && ./serving.sh'
-
 const bash_files = [
   {
     'name': 'make_views.sh',
@@ -134,11 +143,6 @@ const bash_files = [
   {
     'name': 'serving.sh',
     'sh': serving
-  }
-  ,
-  {
-    'name': 'make_all.sh',
-    'sh': make_all
   }
 ]
 
