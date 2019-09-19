@@ -3,14 +3,14 @@ const validator = require('validator')
 const lengh_init = 0
 const leng_end = (_file) => { return _file.length - 3 }
 const view_path_es6 = './src/view/es6+'
-const view_path_es5 = './src/view/es5'
 const fun_view_path_es5 = './functions/view/es5'
+const preact_template_folder = './src/view/es6+/preact_templates'
 const settings = { withFileTypes: true }
 const exec_babel = './node_modules/.bin/babel'
 
 const list_files_dirs = fs.readdirSync(view_path_es6, settings)
 
-console.log('\nBuilding tasks ...\n---------->')
+console.log('\nBuilding bashs ...\n---------->')
 
 ///////
 // CODE TRANSPILATE VIEWS
@@ -23,9 +23,15 @@ function building_views() {
     const delete_index_js = `if [ -f ${view_path_es6}/${folder}/index.js ]; then rm -f ${view_path_es6}/${folder}/index.js; fi`
 
     return (
-      `#Convert ${file} to common js incorporating preact for to use in client side rendering
+      `#Convert ${file} to common js incorporating preact for to use in client side rendering and server side rendering
 
-${delete_index_js} && cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && preact build --src ${view_path_es6}/${folder} --dest temp/${build_folder} --no-prerender --service-worker false --clean true && cp -v temp/${build_folder}/bundle*.js temp/res/js-views/${file} && if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat - temp/res/js-views/${file} > temp00 && mv temp00 temp/res/js-views/${file} ; fi && ${delete_index_js}
+${delete_index_js} && cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && preact build --src ${view_path_es6}/${folder} --dest temp/${build_folder} --service-worker false --clean true
+
+if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat - temp/${build_folder}/bundle*.js > temp/${build_folder}/temp && mv -v temp/${build_folder}/temp temp/${build_folder}/bundle*.js ; fi 
+
+cp -v temp/${build_folder}/bundle*.js temp/res/js-views/ && cp -v temp/${build_folder}/polyfills*.js temp/res/js-views/ 
+
+${delete_index_js} && div_fixed=$(cat ./temp/${build_folder}/index.html | grep -oE '<body>.+</body>') && sed -e "s@<body>.*</body>@$div_fixed@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
 
 `
     )
@@ -35,7 +41,7 @@ ${delete_index_js} && cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/
 
     const view_to_common_js = list_files_dirs.filter(
       elem => (
-        elem.isDirectory() && (elem.name !== 'lib' && elem.name !== 'frame')
+        elem.isDirectory() && (elem.name !== 'lib' && elem.name !== 'frame' && elem.name !== 'preact_templates')
       )
     ).map(
       (dir) => {
@@ -75,12 +81,6 @@ rm -rf public && mkdir -p public/assets/js public/assets/css public/assets/img p
 rm -rf public/index.html`
   }
 
-  function views_to_es5() {
-    return `#Convert views to es5 for use in server side rendering in controller
-
-${exec_babel} ${view_path_es6} --out-dir ${view_path_es5} --ignore "./src/node_modules"  --presets=@babel/preset-env`
-  }
-
   return `#!/bin/bash
 
 printf "\x5cnTranspilate Views ...\x5cn---------->\x5cn"
@@ -89,9 +89,7 @@ ${init_process_bviews()}
 
 ${fix_public_folder()}
 
-${delete_index_html()}
-
-${views_to_es5()}`
+${delete_index_html()}`
 }
 
 ///////
@@ -107,12 +105,9 @@ printf "\x5cnTranspilate Functions ...\x5cn---------->\x5cn"
 
 cd functions && rm -rf !(node_modules|package.json|package-lock.json) && cd ..
 
-${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6}","${view_path_es5}" --presets=@babel/preset-env
+${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6}/home","${view_path_es6}/lib","${view_path_es6}/dashboard" --presets=@babel/preset-env
 
-cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/
-
-#if folder ${view_path_es5} exists, copy its content in function
-if [ "$(find ${view_path_es5} -type f -name "*.js" 2>/dev/null)" ] ; then rm -rf functions/view && mkdir -p ${fun_view_path_es5} && cp -rv ${view_path_es5}/* ${fun_view_path_es5}/ ; fi`
+cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/`
 }
 
 ///////
