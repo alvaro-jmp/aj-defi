@@ -16,9 +16,9 @@ class v_home extends Component {
         div({ ref: c => this.div_login = c, class: 'w3-display-topmiddle w3-card w3-padding custom-card2 w3-margin-top' }, [
           h1({ class: 'w3-jumbo w3-center', style: { 'font-family': '\'Manjari\', sans-serif' } }, ['aj-bank']),
           h1({}, ['Email']),
-          input({ class: 'w3-input' }, []),
+          input({ class: 'w3-input', type: 'text', placeholder: 'type your email here', name: 'email', autocomplete: 'email', maxlength: '50' }, []),
           h1({}, ['Password']),
-          input({ class: 'w3-input' }, []),
+          input({ class: 'w3-input', type: 'password', placeholder: 'type your password here', name: 'psw', autocomplete: 'current-password', maxlength: '1024' }, []),
           button({ class: 'w3-button w3-center w3-block w3-blue w3-hover-teal w3-section w3-padding w3-large', type: 'button' }, ['Sign in'])
         ])
       ])
