@@ -79,6 +79,7 @@ config_fb.js
 # bash scripts
 make_functions.sh
 make_views.sh
+make_views_fun.sh
 
 # public folder
 /public
