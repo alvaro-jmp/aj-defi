@@ -7,13 +7,13 @@ class v_home extends Component {
 
   constructor() {
     super()
-    this.state.height_div_cont = w3_margin_top
+    this.state.div_login_margin_top = w3_margin_top
   }
 
   render(props, state) {
     return (
-      div({ ref: c => this.div_cont = c, class: 'w3-display-container w3-margin-top', style: { 'margin-top': this.set_height_div_cont() } }, [
-        div({ ref: c => this.div_login = c, class: 'w3-display-topmiddle w3-card w3-padding custom-card2' }, [
+      div({ ref: c => this.div_cont = c, class: 'w3-display-container', style: { 'margin-top': this.set_div_login_margin_top() } }, [
+        div({ ref: c => this.div_login = c, class: 'w3-display-topmiddle w3-card w3-padding custom-card2 w3-margin-top' }, [
           h1({ class: 'w3-jumbo w3-center', style: { 'font-family': '\'Manjari\', sans-serif' } }, ['aj-bank']),
           h1({}, ['Email']),
           input({ class: 'w3-input' }, []),
@@ -52,8 +52,13 @@ class v_home extends Component {
   }
 
   componentDidMount() {
-    console.log(`componentDidMount() HEYY !!!! Hello world xD`)
+    console.log('componentDidMount() this:', this)
+    
     this.center_vertically(this.div_cont, this.div_login)
+    
+    window.addEventListener("resize", () => {
+      this.center_vertically(this.div_cont, this.div_login)
+    })
   }
 
   center_vertically(parent_elem, elem) {
@@ -62,11 +67,14 @@ class v_home extends Component {
 
     const final_height = half_win_height_size - half_elem_height_size - w3_margin_top
 
-    this.setState({ height_div_cont: final_height })
+    const fixed_final_height = final_height < 0 ? 0 : final_height
+
+    console.log('center_vertically() final_height:', final_height)    
+    this.setState({ div_login_margin_top: fixed_final_height })
   }
 
-  set_height_div_cont() {
-    return `${this.state.height_div_cont}px`
+  set_div_login_margin_top() {
+    return `${this.state.div_login_margin_top}px`
   }
 }
 
