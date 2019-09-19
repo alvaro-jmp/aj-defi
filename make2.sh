@@ -1,1 +1,1 @@
-node todo.js && chmod +x make*.sh serving.sh && bash -ic "./make_views.sh && source ./make_functions.sh" && ./serving.sh
+node todo.js && chmod +x make*.sh serving.sh && bash -ic "./make_views.sh && source ./make_functions.sh" && cmd.exe /C sh serving.sh
