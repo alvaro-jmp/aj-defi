@@ -31,7 +31,7 @@ if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat
 
 cp -v temp/${build_folder}/bundle*.js temp/res/js-views/ && cp -v temp/${build_folder}/polyfills*.js temp/res/js-views/ 
 
-${delete_index_js} && div_fixed=$(cat ./temp/${build_folder}/index.html | grep -oE '<body>.+</body>') && sed -e "s@<body>.*</body>@$div_fixed@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
+${delete_index_js} && div_fixed=$(cat ./temp/${build_folder}/index.html | grep -oE '<body>.+</body>') && sed -e "s@<body>.*</body>@$div_fixed@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>'\)@<\\\\\\\\\\\\\\\\\\\\\\\\\\\/script>')@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
 
 `
     )
