@@ -1,12 +1,18 @@
+const cwd_folder = 'scripts'
+process.chdir(`./${cwd_folder}`)
 const fs = require('fs')
 const validator = require('validator')
 const lengh_init = 0
 const leng_end = (_file) => { return _file.length - 3 }
-const view_path_es6 = './src/view/es6+'
-const fun_view_path_es5 = './functions/view/es5'
+const view_path_es6 = '../src/view/es6+'
+const view_path_es6_2 = './src/view/es6+'
 const preact_template_folder = './src/view/es6+/preact_templates'
 const settings = { withFileTypes: true }
 const exec_babel = './node_modules/.bin/babel'
+const scripts_folder = '../scripts'
+const temp_folder = './temp'
+const public_folder = './public'
+const etc_folder = './etc'
 
 const list_files_dirs = fs.readdirSync(view_path_es6, settings)
 
@@ -20,18 +26,18 @@ function building_views() {
 
   function preact_cli(file, folder, build_folder = file.substring(lengh_init, leng_end(file))) {
 
-    const delete_index_js = `if [ -f ${view_path_es6}/${folder}/index.js ]; then rm -f ${view_path_es6}/${folder}/index.js; fi`
+    const delete_index_js = `if [ -f ${view_path_es6_2}/${folder}/index.js ]; then rm -f ${view_path_es6_2}/${folder}/index.js; fi`
 
     return (
       `#Convert ${file} to common js incorporating preact for to use in client side rendering and server side rendering
 
-${delete_index_js} && cp -v ${view_path_es6}/${folder}/${file} ${view_path_es6}/${folder}/index.js && preact build --src ${view_path_es6}/${folder} --dest temp/${build_folder} --service-worker false --clean true
+${delete_index_js} && cp -v ${view_path_es6_2}/${folder}/${file} ${view_path_es6_2}/${folder}/index.js && preact build --src ${view_path_es6_2}/${folder} --dest ${temp_folder}/${build_folder} --service-worker false --clean true --no-prerender
 
-if [ -f etc/info_licenses_used.txt ] ; then cat etc/info_licenses_used.txt | cat - temp/${build_folder}/bundle*.js > temp/${build_folder}/temp && mv -v temp/${build_folder}/temp temp/${build_folder}/bundle*.js ; fi 
+if [ -f ${etc_folder}/info_licenses_used.txt ] ; then cat ${etc_folder}/info_licenses_used.txt | cat - ${temp_folder}/${build_folder}/bundle*.js > ${temp_folder}/${build_folder}/temp && mv -v ${temp_folder}/${build_folder}/temp ${temp_folder}/${build_folder}/bundle*.js ; fi 
 
-cp -v temp/${build_folder}/bundle*.js temp/res/js-views/ && cp -v temp/${build_folder}/polyfills*.js temp/res/js-views/ 
+cp -v ${temp_folder}/${build_folder}/bundle*.js ${temp_folder}/res/js-views/ && cp -v ${temp_folder}/${build_folder}/polyfills*.js ${temp_folder}/res/js-views/ 
 
-${delete_index_js} && div_fixed=$(cat ./temp/${build_folder}/index.html | grep -oE '<body>.+</body>') && sed -e "s@<body>.*</body>@$div_fixed@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>'\)@<\\\\\\\\\\\\\\\\\\\\\\\\\\\/script>')@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
+${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>'\)@<\\\\\\\\\\\\\\\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
 
 `
     )
@@ -58,13 +64,9 @@ ${delete_index_js} && div_fixed=$(cat ./temp/${build_folder}/index.html | grep -
   }
 
   function init_process_bviews() {
-    return `#Delete preset babel if exists
+    return `#Delete temp (temporal) folder and create new one and two subfolders
 
-rm -f .babelrc
-
-#Delete temp (temporal) folder and create new one and two subfolders
-
-rm -rf temp && mkdir -p temp/res/js-views
+rm -rf ${temp_folder} && mkdir -p ${temp_folder}/res/js-views
 
 ${making_views()}`
   }
@@ -72,13 +74,13 @@ ${making_views()}`
   function fix_public_folder() {
     return `#Adding static files as css, js, html, fonts to public folder in its respective assets folders
 
-rm -rf public && mkdir -p public/assets/js public/assets/css public/assets/img public/assets/fonts && if [ "$(find etc/html -type f -name "*.html" 2>/dev/null)" ] ; then cp -v etc/html/* public/ ; fi && if [ "$(find etc/css -type f -name "*.css" 2>/dev/null)" ] ; then cp -v etc/css/*.css public/assets/css/ ; fi && if [ "$(find temp/res/js-views -type f -name "*.js" 2>/dev/null)" ] ; then cp -v temp/res/js-views/*.js public/assets/js/ ; fi && if [ "$(ls -A etc/fonts 2>/dev/null)" ] ; then cp -rv etc/fonts/* public/assets/fonts/ ; fi && CP_MFT_N_ICON='if [ "$(find etc/img -type f -name "manifest.json" 2>/dev/null)" ]; then cp -v etc/manifest.json public/; fi && if [ "$(find etc/img -type f -name "favicon.ico" 2>/dev/null)" ]; then cp -v etc/img/favicon.ico public/assets/img/; fi' && if [ "$(find etc/js -type f -name "*.js" 2>/dev/null)" ] ; then cp -v etc/js/*.js public/assets/js/ && eval $CP_MFT_N_ICON ; else eval $CP_MFT_N_ICON ; fi`
+rm -rf public && mkdir -p ${public_folder}/assets/js ${public_folder}/assets/css ${public_folder}/assets/img ${public_folder}/assets/fonts && if [ "$(find ${etc_folder}/html -type f -name "*.html" 2>/dev/null)" ] ; then cp -v ${etc_folder}/html/* ${public_folder}/ ; fi && if [ "$(find ${etc_folder}/css -type f -name "*.css" 2>/dev/null)" ] ; then cp -v ${etc_folder}/css/*.css ${public_folder}/assets/css/ ; fi && if [ "$(find ${temp_folder}/res/js-views -type f -name "*.js" 2>/dev/null)" ] ; then cp -v ${temp_folder}/res/js-views/*.js ${public_folder}/assets/js/ ; fi && if [ "$(ls -A ${etc_folder}/fonts 2>/dev/null)" ] ; then cp -rv ${etc_folder}/fonts/* ${public_folder}/assets/fonts/ ; fi && CP_MFT_N_ICON='if [ "$(find ${etc_folder}/img -type f -name "manifest.json" 2>/dev/null)" ]; then cp -v ${etc_folder}/manifest.json ${public_folder}/; fi && if [ "$(find ${etc_folder}/img -type f -name "favicon.ico" 2>/dev/null)" ]; then cp -v ${etc_folder}/img/favicon.ico ${public_folder}/assets/img/; fi' && if [ "$(find ${etc_folder}/js -type f -name "*.js" 2>/dev/null)" ] ; then cp -v ${etc_folder}/js/*.js ${public_folder}/assets/js/ && eval $CP_MFT_N_ICON ; else eval $CP_MFT_N_ICON ; fi`
   }
 
   function delete_index_html() {
     return `#Delete index.html if exists
 
-rm -rf public/index.html`
+rm -rf ${public_folder}/index.html`
   }
 
   return `#!/bin/bash
@@ -141,8 +143,8 @@ const bash_files = [
   }
 ]
 
-const wf = (name, cmd) => new Promise((resolve, reject) => {
-  fs.writeFile(name, cmd, (err) => {
+const write_files = (folder, name, sh) => new Promise((resolve, reject) => {
+  fs.writeFile(`${folder}/${name}`, sh, (err) => {
     if (err) reject(`Error writing file:${name}`)
     else resolve(`Writed file:${name} successful`)
   })
@@ -151,7 +153,7 @@ const wf = (name, cmd) => new Promise((resolve, reject) => {
 const to_do = async () => {
   for (const f of bash_files) {
     try {
-      const x = await wf(f.name, f.sh)
+      const x = await write_files(scripts_folder, f.name, f.sh)
       console.log(x)
     } catch (e) { console.log(`e:${e}`) }
   }
