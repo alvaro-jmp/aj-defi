@@ -13,7 +13,10 @@
 // Licensed under the MIT License (MIT), see
 // https://github.com/ohanhi/hyperscript-helpers/blob/master/LICENSE
 
-
+// This code use third-party software "Fallback.js":
+// Copyright (c) 2013 Dolox Inc.
+// Licensed under the MIT License (MIT), see
+// https://github.com/dolox/fallback/blob/v1/LICENSE.txt
 
 // This code use third-party software "firebase":
 /**
