@@ -149,4 +149,4 @@ exports.cookie_session_verf = (_session_cookie) => { return validator.isJWT(_ses
 
 exports.objId = (rnd = r16 => Math.floor(r16).toString(16)) => rnd(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => rnd(Math.random() * 16))
 
-exports.psw_verf = (_psw) => { return validator.matches(_psw, /^(?!.*[^0-9a-z\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~]).{16,1024}$/i) }
+exports.psw_verf = (_psw) => { return validator.matches(_psw, /^(?!.*[^0-9a-z\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\|\}\]\{\[\"\'\:\;\?\/\>\.\<\,\ñ\á\é\í\ó\ú]).{16,1024}$/i) }

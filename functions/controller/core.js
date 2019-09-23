@@ -14,10 +14,12 @@ exports.get_app = function (ref_fb, ref_fb_admin, admin_firestore, admin_real_ti
   var p_get_secret = require('../model/get_secret').p_get_secret(admin_firestore);
 
   var c_home = require('./c_home'); // const p_login = require('./props_f_web_router/p_login')
-  // const p_view_dashboard = require('./props_f_web_router/p_view_dashboard')
 
 
-  var t = require('../lib/tools');
+  var c_login = require('./c_login'); // const p_view_dashboard = require('./props_f_web_router/p_view_dashboard')
+
+
+  var t = require('./lib/tools');
 
   var routes_home = [/^(|\/)$/];
   var routes_dashboard = [/^\/cnp\/dashboard(|\/)$/, /^\/cnp(|\/)$/];
@@ -85,6 +87,7 @@ exports.get_app = function (ref_fb, ref_fb_admin, admin_firestore, admin_real_ti
   // })
 
   app.use(c_home.get_router(ref_fb, ref_fb_admin, p_get_secret, app)); // app.use(p_login.fun(ref_fb, ref_fb_admin, p_get_secret, admin_firestore))
+  // app.use(c_login.get_router(ref_fb, ref_fb_admin, p_get_secret, app, admin_firestore, admin_real_time_db))
   // app.use(p_view_dashboard.fun(ref_fb, ref_fb_admin, p_get_secret, admin_firestore))
 
   return app;

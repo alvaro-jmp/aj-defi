@@ -11,7 +11,7 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app) {
 
   var c_name = 'c_home -->'; // controller name  
 
-  var t = require('../lib/tools');
+  var t = require('./lib/tools');
 
   router.get(/^(|\/)$/, function (req, res) {
     p_get_secret.then(function (snap) {
