@@ -4,7 +4,7 @@ exports.get_router = (ref_fb, ref_fb_admin, p_get_secret, ref_app) => {
   const router = express.Router();
   const csrf = require('csrf')
   const c_name = 'c_home -->' // controller name  
-  const t = require('../lib/tools')
+  const t = require('./lib/tools')
 
   router.get(/^(|\/)$/, (req, res) => {
 

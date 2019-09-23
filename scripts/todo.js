@@ -37,7 +37,7 @@ if [ -f ${etc_folder}/info_licenses_used.txt ] ; then cat ${etc_folder}/info_lic
 
 cp -v ${temp_folder}/${build_folder}/bundle*.js ${temp_folder}/res/js-views/ && cp -v ${temp_folder}/${build_folder}/polyfills*.js ${temp_folder}/res/js-views/ 
 
-${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>'\)@<\\\\\\\\\\\\\\\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
+${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr_${file}) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>'\)@<\\\\\\\\\\\\\\\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ${preact_template_folder}/template_${file} > ${preact_template_folder}/temp && cp -v ${preact_template_folder}/temp ${preact_template_folder}/template_${file} && rm -f ${preact_template_folder}/temp
 
 `
     )
@@ -107,7 +107,7 @@ printf "\x5cnTranspilate Functions ...\x5cn---------->\x5cn"
 
 cd functions && rm -rf !(node_modules|package.json|package-lock.json) && cd ..
 
-${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6}/home","${view_path_es6}/lib","${view_path_es6}/dashboard" --presets=@babel/preset-env
+${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6_2}/home","${view_path_es6_2}/lib","${view_path_es6_2}/dashboard" --presets=@babel/preset-env
 
 cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/`
 }

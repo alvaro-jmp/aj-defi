@@ -6,6 +6,16 @@ printf "\nTranspilate Views ...\n---------->\n"
 
 rm -rf ./temp && mkdir -p ./temp/res/js-views
 
+#Convert v_dashboard.js to common js incorporating preact for to use in client side rendering and server side rendering
+
+if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && cp -v ./src/view/es6+/dashboard/v_dashboard.js ./src/view/es6+/dashboard/index.js && preact build --src ./src/view/es6+/dashboard --dest ./temp/v_dashboard --service-worker false --clean true --no-prerender
+
+if [ -f ./etc/info_licenses_used.txt ] ; then cat ./etc/info_licenses_used.txt | cat - ./temp/v_dashboard/bundle*.js > ./temp/v_dashboard/temp && mv -v ./temp/v_dashboard/temp ./temp/v_dashboard/bundle*.js ; fi 
+
+cp -v ./temp/v_dashboard/bundle*.js ./temp/res/js-views/ && cp -v ./temp/v_dashboard/polyfills*.js ./temp/res/js-views/ 
+
+if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && bundle_n_polyfills=$(cat ./temp/v_dashboard/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr_v_dashboard.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>')@<\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ./src/view/es6+/preact_templates/template_v_dashboard.js > ./src/view/es6+/preact_templates/temp && cp -v ./src/view/es6+/preact_templates/temp ./src/view/es6+/preact_templates/template_v_dashboard.js && rm -f ./src/view/es6+/preact_templates/temp
+
 
 #Convert v_home.js to common js incorporating preact for to use in client side rendering and server side rendering
 
@@ -15,7 +25,7 @@ if [ -f ./etc/info_licenses_used.txt ] ; then cat ./etc/info_licenses_used.txt |
 
 cp -v ./temp/v_home/bundle*.js ./temp/res/js-views/ && cp -v ./temp/v_home/polyfills*.js ./temp/res/js-views/ 
 
-if [ -f ./src/view/es6+/home/index.js ]; then rm -f ./src/view/es6+/home/index.js; fi && bundle_n_polyfills=$(cat ./temp/v_home/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>')@<\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ./src/view/es6+/preact_templates/template_v_home.js > ./src/view/es6+/preact_templates/temp && cp -v ./src/view/es6+/preact_templates/temp ./src/view/es6+/preact_templates/template_v_home.js && rm -f ./src/view/es6+/preact_templates/temp
+if [ -f ./src/view/es6+/home/index.js ]; then rm -f ./src/view/es6+/home/index.js; fi && bundle_n_polyfills=$(cat ./temp/v_home/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr_v_home.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>')@<\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ./src/view/es6+/preact_templates/template_v_home.js > ./src/view/es6+/preact_templates/temp && cp -v ./src/view/es6+/preact_templates/temp ./src/view/es6+/preact_templates/template_v_home.js && rm -f ./src/view/es6+/preact_templates/temp
 
 
 
