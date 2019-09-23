@@ -20,7 +20,7 @@ class v_home extends Component {
     this.state.settings_alert_psw = {
       class: 'w3-panel w3-pale-yellow w3-display-container w3-border',
       show: false,
-      msg: 'The password must have between 16 and 1024 character, it can contain letters, numbers and the following special characters ~`!@#$%^&*()-_+=|}]{["\':;?/>.<,ñáéíóú\\ without space'
+      msg: 'The password must have between 16 and 1024 characters, it can contain letters, numbers and the following special characters ~`!@#$%^&*()-_+=|}]{["\':;?/>.<,ñáéíóú\\ without space'
     }
   }
 
@@ -60,6 +60,11 @@ class v_home extends Component {
     })
   }
 
+  // componentDidUpdate() {
+  //   console.log('v_home::componentDidUpdate()')
+  //   this.center_mini_login()
+  // }
+
   center_mini_login() {
     const [div_cont, div_login, form_min_login] = this.get_divs_mini_login_n_form()
     this.center_vertically(div_cont, div_login)
@@ -73,10 +78,10 @@ class v_home extends Component {
 
     const fixed_final_height = final_height < 0 ? 0 : final_height
     this.state.div_login_margin_top = fixed_final_height
-    // document.querySelector('#div_cont_mini_login').style.marginTop = this.set_div_login_margin_top()
     parent_elem.style.marginTop = this.set_div_login_margin_top()
 
     console.log(
+      'v_home::center_vertically()',
       'half_win_height_size:', half_win_height_size,
       'half_elem_height_size:', half_elem_height_size,
       'final_height:', final_height,
@@ -127,10 +132,7 @@ class v_home extends Component {
       else
         this.state.settings_alert_psw.show = false
 
-      this.setState(() => {
-        console.log('v_home::submit_data() this.setState()')
-        this.center_mini_login()
-      })
+      this.setState()
 
       if (email_verf && psw_verf && tk_verf) {
         console.log('v_home::submit_data() all fine')

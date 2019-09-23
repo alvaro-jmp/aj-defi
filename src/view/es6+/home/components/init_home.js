@@ -54,8 +54,13 @@ class mini_login extends Component {
   disable_alert(_settings) {
     console.log('mini_login::disable_alert _show:', _settings)
     _settings.show = false
-    this.setState(() => this.props.ref_v_home.center_mini_login())
+    this.setState()
     console.log('mini_login::disable_alert this:', this)
+  }
+
+  componentDidUpdate() {
+    console.log('init_home::componentDidUpdate()')
+    this.props.ref_v_home.center_mini_login()
   }
 }
 
