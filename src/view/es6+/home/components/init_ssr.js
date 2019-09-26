@@ -13,15 +13,15 @@ exports.vdom_mini_login = (_margin_top) => {
           h1({}, ['Email']),         
           
           //input email
-          input({ id: 'i_email', class: 'w3-input', type: 'text', placeholder: 'type your email here', name: 'email', autocomplete: 'email', maxlength: '50' }, []),
+          input({ id: 'i_email', class: 'w3-input', type: 'text', placeholder: 'Type your email here', name: 'email', autocomplete: 'email', maxlength: '50' }, []),
           
           // password
           h1({}, ['Password']),
           //input password
-          input({ id: 'i_psw', class: 'w3-input', type: 'password', placeholder: 'type your password here', name: 'psw', autocomplete: 'current-password', maxlength: '1024' }, []),
+          input({ id: 'i_psw', class: 'w3-input', type: 'password', placeholder: 'Type your password here', name: 'psw', autocomplete: 'current-password', maxlength: '1024' }, []),
 
           //submit
-          button({ class: 'w3-button w3-center w3-block w3-blue w3-hover-teal w3-section w3-padding w3-large', type: 'button' }, ['Sign in'])
+          button({ class: 'w3-button w3-center w3-block w3-blue w3-hover-teal w3-section w3-padding w3-large', type: 'button' }, ['Log in'])
         ])
       ])
     ])

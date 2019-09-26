@@ -1,18 +1,18 @@
 "use strict";
 
+var view_home = require('../view/es6+/preact_templates/template_v_home');
+
+var express = require('express');
+
+var router = express.Router();
+
+var csrf = require('csrf');
+
+var c_name = 'c_home -->'; // controller name  
+
+var t = require('./lib/tools');
+
 exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app) {
-  var view_home = require('../view/es6+/preact_templates/template_v_home');
-
-  var express = require('express');
-
-  var router = express.Router();
-
-  var csrf = require('csrf');
-
-  var c_name = 'c_home -->'; // controller name  
-
-  var t = require('./lib/tools');
-
   router.get(/^(|\/)$/, function (req, res) {
     p_get_secret.then(function (snap) {
       var secret_tk = snap.data().tk;

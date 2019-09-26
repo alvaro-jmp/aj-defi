@@ -89,8 +89,8 @@ exports.get_app = (ref_fb, ref_fb_admin, admin_firestore, admin_real_time_db) =>
 
   app.use(c_home.get_router(ref_fb, ref_fb_admin, p_get_secret, app))
   // app.use(p_login.fun(ref_fb, ref_fb_admin, p_get_secret, admin_firestore))
-  // app.use(c_login.get_router(ref_fb, ref_fb_admin, p_get_secret, app, admin_firestore, admin_real_time_db))
-  // app.use(p_view_dashboard.fun(ref_fb, ref_fb_admin, p_get_secret, admin_firestore))
+  app.use(c_login.get_router(ref_fb, ref_fb_admin, p_get_secret, app, admin_firestore, admin_real_time_db))
+  // app.use(p_view_dashboard.fun(ref_fb, ref_fb_admin, p_get_secret, admin_firestore))  
 
   return app
 }

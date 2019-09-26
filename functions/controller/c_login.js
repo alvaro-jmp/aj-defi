@@ -1,36 +1,41 @@
 "use strict";
 
+var express = require('express');
+
+var router = express.Router();
+
+var csrf = require('csrf');
+
+var c_name = 'c_login -->'; // controller name  
+
+var t = require('./lib/tools');
+
+var length_body = 3;
+
+var validator = require('validator');
+
 exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_admin_firestore, ref_admin_real_time_db) {
-  var express = require('express');
+  router.post(/^\/login(|\/)$/, function (req, res) {
+    t.log2(c_name, 'req.body.email:', req.body.email);
+    t.log2(c_name, 'req.body.psw:', req.body.psw);
 
-  var router = express.Router();
-
-  var csrf = require('csrf');
-
-  var c_name = 'c_login -->'; // controller name  
-
-  var t = require('./lib/tools');
-
-  router.post(/^\/login(|\/)/, function (req, res) {
     if (t.request__data_is_json(req)) {
       if (!t.request__body_is_undefined(req)) {
-        if (Object.keys(req.body).length === 4) {
+        if (Object.keys(req.body).length === length_body) {
           var email = req.body.email;
           var psw = req.body.psw;
           var tk = req.body.tk; // const _hash = req.body.hash
+          // const continue_login = req.body.continue_login
+          // if (t.is_string(email) && t.is_string(psw) && t.is_string(tk) && t.is_boolean(continue_login)) {
 
-          var continue_login = req.body.continue_login;
-
-          if (t.is_string(email) && t.is_string(psw) && t.is_string(tk) && t.is_boolean(continue_login)) {
+          if (t.is_string(email) && t.is_string(psw) && t.is_string(tk)) {
             var email_verf = validator.isEmail(email);
             var psw_verf = t.psw_verf(psw);
             var tk_verf = t.tk_verf(tk);
             p_get_secret.then(function (snap) {
               var secret_tk = snap.data().tk;
 
-              if (email_verf && psw_verf && tk_verf && csrf().verify(secret, tk)) {
-                t.log2(c_name, "email:".concat(email));
-                t.log2(c_name, "psw:".concat(psw));
+              if (email_verf && psw_verf && tk_verf && csrf().verify(secret_tk, tk)) {
                 ref_fb.auth().signInWithEmailAndPassword(email, psw).then(function (info_user) {
                   t.log2(c_name, 'Signin succesfull');
                   var uid = info_user.user.uid;
@@ -38,9 +43,9 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
                     source: 'default'
                   }).then(function (snap2) {
                     if (snap2.exists) {
-                      var user_info2 = snap.data();
+                      var user_info2 = snap2.data();
 
-                      if (user_info2.perm.includes('web_all') && user_info2.perm.includes('demo') && user_info2.perm.includes('web_login')) {
+                      if (user_info2.perm.includes('web_all') || user_info2.perm.includes('demo') || user_info2.perm.includes('web_login')) {
                         ref_fb_admin.auth().createCustomToken(uid).then(function (custom_token) {
                           var options = {
                             maxAge: 60 * 60 * 1000,
@@ -51,14 +56,14 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
 
                           res.setHeader('Cache-Control', 'private');
                           res.cookie('__session', custom_token, options);
-                          t.resjson('Login ok', res);
+                          t.resjson(res, 'Login ok');
                         })["catch"](function (err) {
                           t.log2(c_name, "Error generating customToken: ".concat(err, " "));
-                          t.resjson('Error L6', res); // L6 - Error generating custom token
+                          t.resjson(res, 'Error L6'); // L6 - Error generating custom token
                         });
                       } else {
                         t.log2(c_name, "Warning D7f, (web_login) user does not have permission for login");
-                        t.resjson('Warning D7e', res);
+                        t.resjson(res, 'Warning D7e');
                       }
                     } else {
                       t.log2(c_name, 'Error A1, User undefined:', err);
@@ -70,7 +75,7 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
                   t.log2(c_name, "err.code: ".concat(err.code, " "));
                   t.log2(c_name, "err.message: ".concat(err.message, " "));
                   res.status(401);
-                  t.resjson('Error L5', res);
+                  t.resjson(res, 'Error L5');
                 });
               } else {
                 t.response__data_verf_is_not_valid(res, ref_fb);
@@ -80,11 +85,14 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
               t.log2(c_name, "err.code: ".concat(err.code, " "));
               t.log2(c_name, "err.message: ".concat(err.message, " "));
               res.status(401);
-              t.resjson('Error L5', res);
+              t.resjson(res, 'Error L5');
             });
           } else {
             t.response__data_is_not_correct_type(res, ref_fb);
           }
+        } else {
+          console.log(prop_name, "Error d10c, req.body it has more or less than ".concat(length_body, " elements, is only necesary for /login"));
+          t.user_not_valid(res, ref_fb);
         }
       } else {
         t.response__body_is_undefined(res, ref_fb);
@@ -93,4 +101,5 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
       t.response__data_is_not_json(res, ref_fb);
     }
   });
+  return router;
 };
