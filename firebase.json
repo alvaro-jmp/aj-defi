@@ -19,9 +19,14 @@
       }
       ,
       {
-        "source": "/dashboard",
+        "source": "/login",
         "function": "__core"
       }
+      ,
+      {
+        "source": "/dashboard",
+        "function": "__core"
+      }      
     ]
   }
 }
