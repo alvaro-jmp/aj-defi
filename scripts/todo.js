@@ -16,7 +16,67 @@ const etc_folder = './etc'
 
 const list_files_dirs = fs.readdirSync(view_path_es6, settings)
 
-console.log('\nBuilding bashs ...\n---------->')
+
+///////
+// CODE GENERATOR BASH FILES
+// --------->
+
+console.log('\nBuilding bash files ...\n---------->')
+
+// const requires_root = ['firebase-tools', 'preact-cli', '@babel/cli', '@babel/core', '@babel/plugin-transform-react-jsx', '@babel/preset-env', 'firebase', 'firebase-functions', 'hyperscript-helpers', 'preact', 'preact-render-to-string', 'validator']
+
+// const requires_src_function = ['body-parser', 'cookie-parser', 'csrf', 'dotenv', 'express', 'firebase', 'firebase-admin', 'firebase-functions', 'helmet', 'moment', 'preact', 'preact-render-to-string', 'validator', 'firebase-functions-test']
+
+// function test_requires([h, ...tail], _path = undefined, index = 20, ) {
+//   // console.log('h:',h,'tail:', tail, 'index:', index)
+//   if (index === 0) // In case of dead loop
+//     return []
+//   if (typeof h === 'undefined' && tail.length === 0)
+//     return []
+//   try {
+//     const fixed_path = () => {
+//       if (typeof _path === 'undefined')
+//         return `/node_modules/${h}`
+//       else if (_path === './')
+//       return `/node_modules/${h}`
+//       else
+//         return `${_path.split('.')[1]}/node_modules/${h}`
+//     }
+//     // const fixed_path = (typeof _path !== 'undefined' || _path !== './') ? `${_path}/node_modules/${h}` : h
+//     require.resolve(process.cwd() + fixed_path())
+//     return [...test_requires(tail, _path, --index)]
+//   } catch (e) {
+//     return [h, ...test_requires(tail, _path, --index)]
+//   }
+// }
+
+// process.chdir('../') // Return to the root of current work direcotry
+
+// // Review node_modules missing in ./
+// const root_dir = './'
+// const requires_missing_root = test_requires(requires_root, root_dir)
+// console.log(`Missing npm modules in ${root_dir} :`, requires_missing_root.length > 0 ? `${requires_missing_root} , that will be installed` : 'cero' )
+
+// const install_missing_modules_root = requires_missing_root.length > 0 ? requires_missing_root.map(x => (x === 'firebase-tools' || x === 'preact-cli') ? `npm install -g ${x}` : `npm install ${x}`) : []
+
+
+// // Review node_modules missing in ./src
+// const src_dir = './src'
+// const require_missing_src = test_requires(requires_src_function, src_dir)
+// console.log(`Missing npm modules in ${src_dir} :`, require_missing_src.length > 0 ? `${require_missing_src} , that will be installed` : 'cero')
+
+// const install_missing_modules_src = require_missing_src.length > 0 ? require_missing_src.map(x => `npm install ${x}`) : []
+
+
+// // Review node_modules missing in ./function
+// const function_dir = './functions'
+// const require_missing_function = test_requires(requires_src_function, function_dir)
+// console.log(`Missing npm modules in ${function_dir} :`, require_missing_function.length > 0 ? `${require_missing_function} , that will be installed` : 'cero')
+
+// const install_missing_modules_function = require_missing_function.length > 0 ? require_missing_function.map(x => `npm install ${x}`) : []
+
+// process.chdir(`./${cwd_folder}`) // Return to the defined current work directory
+
 
 ///////
 // CODE TRANSPILATE VIEWS
@@ -63,12 +123,20 @@ ${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/in
     return view_to_common_js
   }
 
+  function installing_missing_modules() {
+    return `${install_missing_modules_root.length > 0 ? `printf "\x5cn#Installing missing modules in ${root_dir}"\n` : ''}${install_missing_modules_root.length > 0 ? install_missing_modules_root.join('\n') : ''}${install_missing_modules_src.length > 0 ? `\nprintf "\x5cn#Installing missing modules in ${src_dir}"\n` : ''}${install_missing_modules_src.length > 0 ? install_missing_modules_src.join('\n') : ''}${install_missing_modules_function.length > 0 ? `\nprintf "\x5cn#Installing missing modules in ${function_dir}"\n` : ''}${install_missing_modules_function.length > 0 ? install_missing_modules_function.join('\n') : ''}`
+  }
+
   function init_process_bviews() {
-    return `#Delete temp (temporal) folder and create new one and two subfolders
+    return (
+      // `${installing_missing_modules()}
+
+`#Delete temp (temporal) folder and create new one and two subfolders
 
 rm -rf ${temp_folder} && mkdir -p ${temp_folder}/res/js-views
 
 ${making_views()}`
+    )
   }
 
   function fix_public_folder() {
