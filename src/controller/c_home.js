@@ -1,10 +1,11 @@
+const view_home = require('../view/es6+/preact_templates/template_v_home')
+const express = require('express')
+const router = express.Router();
+const csrf = require('csrf')
+const c_name = 'c_home -->' // controller name  
+const t = require('./lib/tools')
+
 exports.get_router = (ref_fb, ref_fb_admin, p_get_secret, ref_app) => {  
-  const view_home = require('../view/es6+/preact_templates/template_v_home')
-  const express = require('express')
-  const router = express.Router();
-  const csrf = require('csrf')
-  const c_name = 'c_home -->' // controller name  
-  const t = require('./lib/tools')
 
   router.get(/^(|\/)$/, (req, res) => {
 
