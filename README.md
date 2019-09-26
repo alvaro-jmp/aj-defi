@@ -1,2 +1,4 @@
 # aj-bank
-Ideal bank
+Ideal bank.
+
+In development.
