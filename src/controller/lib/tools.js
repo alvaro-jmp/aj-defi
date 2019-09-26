@@ -1,7 +1,8 @@
 // const ref_fb = require('../ref_fb').ctx
 const moment = require('moment')
+const validator = require('validator')
 
-exports.resjson = (res, ...data) => { res.json({ 'response': data }) }
+exports.resjson = (res, data) => { res.json({ 'response': data }) }
 
 exports.cleaning_cookie__session = (res) => {
   res.setHeader('Cache-Control', 'private')
@@ -56,20 +57,24 @@ exports.response__user_undefined = (res) => {
   user_not_valid(res)
 }
 
-exports.get_time_utc = (timestamp_unix_utc) => {
+const get_time_utc2 = () => {
   if (typeof timestamp_unix_utc !== 'undefined') return moment.unix(timestamp_unix_utc).format('DD/MM/YYYY HH:mm:ss.SSS') + ' UTC'
   return moment.utc(new Date()).format('DD/MM/YYYY HH:mm:ss.SSS z')
 }
-exports.get_timestamp_unix_utc = () => {
+exports.get_time_utc = get_time_utc2
+
+const get_timestamp_unix_utc2 = () => {
   const _date = new Date()
   return (_date.getTime() + _date.getTimezoneOffset() * 60 * 1000) / 1000
 }
+exports.get_timestamp_unix_utc = get_timestamp_unix_utc2
 
-exports.get_timestamp_and_time_in_utc_to_string = () => {
-  const timestamp_unix_utc = get_timestamp_unix_utc()
-  const time_utc = get_time_utc(timestamp_unix_utc)
+const get_timestamp_and_time_in_utc_to_string2 = () => {
+  const timestamp_unix_utc = get_timestamp_unix_utc2()
+  const time_utc = get_time_utc2(timestamp_unix_utc)
   return [time_utc, timestamp_unix_utc]
 }
+exports.get_timestamp_and_time_in_utc_to_string = get_timestamp_and_time_in_utc_to_string2
 
 exports.response__tk_sc_doesnt_exists = (res) => {
   console.log(`Error D5, Token secret doesn't exists`)
@@ -79,7 +84,7 @@ exports.response__tk_sc_doesnt_exists = (res) => {
 exports.log2 = (c_name, ..._txt) => {
   console.log(
     c_name,
-    get_timestamp_and_time_in_utc_to_string[0],
+    get_timestamp_and_time_in_utc_to_string2()[0],
     _txt
   )
 }
@@ -98,4 +103,4 @@ exports.cookie_session_verf = (_session_cookie) => { return validator.isJWT(_ses
 
 exports.objId = (rnd = r16 => Math.floor(r16).toString(16)) => rnd(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => rnd(Math.random() * 16))
 
-exports.psw_verf = (_psw) => { return validator.matches(_psw, /^(?!.*[^0-9a-z\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\|\}\]\{\[\"\'\:\;\?\/\>\.\<\,\ñ\á\é\í\ó\ú]).{16,1024}$/i) }
+exports.psw_verf = (_psw) => { return validator.matches(_psw, /^(?!.*[^0-9a-z\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\|\}\]\{\[\"\'\:\;\?\/\>\.\<\,\ñ\á\é\í\ó\ú\\]).{16,1024}$/i) }

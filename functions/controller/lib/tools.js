@@ -3,11 +3,9 @@
 // const ref_fb = require('../ref_fb').ctx
 var moment = require('moment');
 
-exports.resjson = function (res) {
-  for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-    data[_key2 - 1] = arguments[_key2];
-  }
+var validator = require('validator');
 
+exports.resjson = function (res, data) {
   res.json({
     'response': data
   });
@@ -67,22 +65,28 @@ exports.response__user_undefined = function (res) {
   user_not_valid(res);
 };
 
-exports.get_time_utc = function (timestamp_unix_utc) {
+var get_time_utc2 = function get_time_utc2() {
   if (typeof timestamp_unix_utc !== 'undefined') return moment.unix(timestamp_unix_utc).format('DD/MM/YYYY HH:mm:ss.SSS') + ' UTC';
   return moment.utc(new Date()).format('DD/MM/YYYY HH:mm:ss.SSS z');
 };
 
-exports.get_timestamp_unix_utc = function () {
+exports.get_time_utc = get_time_utc2;
+
+var get_timestamp_unix_utc2 = function get_timestamp_unix_utc2() {
   var _date = new Date();
 
   return (_date.getTime() + _date.getTimezoneOffset() * 60 * 1000) / 1000;
 };
 
-exports.get_timestamp_and_time_in_utc_to_string = function () {
-  var timestamp_unix_utc = get_timestamp_unix_utc();
-  var time_utc = get_time_utc(timestamp_unix_utc);
+exports.get_timestamp_unix_utc = get_timestamp_unix_utc2;
+
+var get_timestamp_and_time_in_utc_to_string2 = function get_timestamp_and_time_in_utc_to_string2() {
+  var timestamp_unix_utc = get_timestamp_unix_utc2();
+  var time_utc = get_time_utc2(timestamp_unix_utc);
   return [time_utc, timestamp_unix_utc];
 };
+
+exports.get_timestamp_and_time_in_utc_to_string = get_timestamp_and_time_in_utc_to_string2;
 
 exports.response__tk_sc_doesnt_exists = function (res) {
   console.log("Error D5, Token secret doesn't exists");
@@ -90,11 +94,11 @@ exports.response__tk_sc_doesnt_exists = function (res) {
 };
 
 exports.log2 = function (c_name) {
-  for (var _len2 = arguments.length, _txt = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-    _txt[_key3 - 1] = arguments[_key3];
+  for (var _len = arguments.length, _txt = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+    _txt[_key2 - 1] = arguments[_key2];
   }
 
-  console.log(c_name, get_timestamp_and_time_in_utc_to_string[0], _txt);
+  console.log(c_name, get_timestamp_and_time_in_utc_to_string2()[0], _txt);
 };
 
 exports.is_string = function (obj) {
@@ -133,5 +137,5 @@ exports.objId = function () {
 };
 
 exports.psw_verf = function (_psw) {
-  return validator.matches(_psw, /^(?!.*[^0-9a-z\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\|\}\]\{\[\"\'\:\;\?\/\>\.\<\,\ñ\á\é\í\ó\ú]).{16,1024}$/i);
+  return validator.matches(_psw, /^(?!.*[^0-9a-z\~\`\!\@\#\$\%\^\&\*\(\)\-\_\+\=\|\}\]\{\[\"\'\:\;\?\/\>\.\<\,\ñ\á\é\í\ó\ú\\]).{16,1024}$/i);
 };
