@@ -47,15 +47,11 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
 
                       if (user_info2.perm.includes('web_all') || user_info2.perm.includes('demo') || user_info2.perm.includes('web_login')) {
                         ref_fb_admin.auth().createCustomToken(uid).then(function (custom_token) {
-                          var options = {
-                            maxAge: 60 * 60 * 1000,
-                            httpOnly: false,
-                            path: '/dashboard'
-                          }; // IN PRODUCTION **************
+                          // const options = { 'maxAge': 3600 }
+                          // IN PRODUCTION **************
                           // const options = { maxAge: (60 * 60 * 1000), httpOnly: false, path: '/dashboard' }
-
                           res.setHeader('Cache-Control', 'private');
-                          res.cookie('__session', custom_token, options);
+                          res.cookie('__session', custom_token);
                           t.resjson(res, 'Login ok');
                         })["catch"](function (err) {
                           t.log2(c_name, "Error generating customToken: ".concat(err, " "));

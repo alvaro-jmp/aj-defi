@@ -34,9 +34,9 @@ exports.get_router = (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_admin_fir
                   ref_fb.auth().signInWithEmailAndPassword(email, psw)
                     .then((info_user) => {
                       t.log2(c_name, 'Signin succesfull')
-                      const uid = info_user.user.uid                      
+                      const uid = info_user.user.uid
                       ref_admin_firestore.collection('users').doc(`${uid}`).get({ source: 'default' })
-                        .then((snap2) => {                          
+                        .then((snap2) => {
                           if (snap2.exists) {
                             const user_info2 = snap2.data()
                             if (
@@ -46,13 +46,14 @@ exports.get_router = (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_admin_fir
                             ) {
                               ref_fb_admin.auth().createCustomToken(uid)
                                 .then((custom_token) => {
-                                  const options = { maxAge: (60 * 60 * 1000), httpOnly: false, path: '/dashboard' }
+
+                                  // const options = { 'maxAge': 3600 }
 
                                   // IN PRODUCTION **************
                                   // const options = { maxAge: (60 * 60 * 1000), httpOnly: false, path: '/dashboard' }
 
                                   res.setHeader('Cache-Control', 'private')
-                                  res.cookie('__session', custom_token, options)
+                                  res.cookie('__session', custom_token)
                                   t.resjson(res, 'Login ok')
 
                                 })
