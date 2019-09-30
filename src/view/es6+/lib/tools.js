@@ -1,6 +1,9 @@
-exports.log_in = () => {
-  const ctk = validator.whitelist(document.cookie.split(/__session\=/)[1], 'a-zA-Z0-9-_.')
-  return firebase.auth().signInWithCustomToken(ctk)
+exports.initialize_firebase = () => {
+  firebase.initializeApp(firebaseConfig)
+}
+
+exports.login = (_email, _psw) => {
+  return firebase.auth().signInWithEmailAndPassword(_email, _psw)  
 }
 
 exports.err_log_in = (err) => {
@@ -78,49 +81,6 @@ exports.retry_fb_fr = (num_retry, ms, promise, callback) => {
       }
     })
 
-}
-
-exports.test_js = (obj, url) => {
-  return new Promise((resolve, reject) => {
-    if (typeof [obj] === 'undefined') {
-      console.log('v_dashboard::test_firebase firebase undefined')
-      // const js = document.createElement('script')
-      // js.src = '/assets/js/firebase-5.9.3.js'
-
-      const fixing = () => {
-        const load_script = (_url, _callback) => {
-          const script = document.createElement('script')
-          script.type = 'text/javascript'
-
-          if (script.readyState) { //IE
-            script.onreadystatechange = () => {
-              if (script.readyState === 'loaded' || script.readyState === 'complete') {
-                script.onreadystatechange = null
-                _callback()
-              }
-            }
-          } else {
-            script.onload = () => {
-              _callback()
-            }
-          }
-
-          script.src = _url
-          // document.getElementsByName('head')[0].appendChild(script)
-          document.head.appendChild(script)
-        }
-
-        load_script(url, () => {
-          // console.log('firebase loaded')
-          resolve('loaded')
-          this.setState()
-        })
-      }
-
-      fixing()
-    } else
-      resolve('is loaded!')
-  })
 }
 
 const patternSubject2 = /^(?!.*[^0-9a-z\s\!\¡\[\]\*\{\}\^\:\;\#\(\)\\\/\-\.\,\¿\?\"\'\<\>\%\=\á\é\í\ó\ú\ñ\à\è\ì\ò\ù\ü]).{4,280}$/i

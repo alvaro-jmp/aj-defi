@@ -7,6 +7,29 @@ import vdom_mini_login from './components/init_home'
 const _br = br({}, [])
 const _b = (...args) => { return (b({}, args)) }
 const [_login, _logging, _login_ok] = t.login_types
+const [_review_email, _invalid_email] = [
+  [_b('Please review your email')]
+  ,
+  ['Invalid email']
+]
+const [_review_psw, _wrong_psw] = [
+  ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters ~`!@#$%^&*()-_+=|}]{["\':;?/>.<,ñáéíóú\\ without space')]
+  ,
+  [_b('Wrong password')]
+]
+const [_user_disabled, _user_not_found, _please_try_again] = [
+  ['User disabled']
+  ,
+  ['User not found']
+  ,
+  ['Please try again the login']
+]
+const [_no_focus_input, _focus_input] = [
+  ['w3-input']
+  ,
+  ['w3-input w3-light-gray']
+]
+
 class v_home extends Component {
 
   constructor() {
@@ -52,6 +75,7 @@ class v_home extends Component {
         if (result === 'is ready') {
           console.log('componentWillMount:: this.state.all_js_css_etc_loaded:', true)
           this.state.all_js_css_etc_loaded = true
+          t.initialize_firebase()
           this.center_mini_login()
         }
       })
@@ -118,91 +142,93 @@ class v_home extends Component {
       const ref_init_home = this.state.ref_init_home
 
       const tk = document.getElementsByTagName("META")[4].content
-      // const email = document.querySelector('#i_email').value
-      const email = ref_init_home.i_email.value
-      // const psw = document.querySelector('#i_psw').value
-      const psw = ref_init_home.i_psw.value
+      const ref_email = ref_init_home.i_email
+      const ref_psw = ref_init_home.i_psw
 
-      const email_verf = validator.isEmail(email)
-      const psw_verf = t.psw_verf(psw)
+      const email_value = ref_email.value
+      const psw_value = ref_psw.value
+
+      const email_verf = validator.isEmail(email_value)
+      const psw_verf = t.psw_verf(psw_value)
       const tk_verf = t.tk_verf(tk)
 
-      const try_again = () => {
-        this.state.settings_status_login.class = 'w3-panel w3-blue w3-display-container'
-        this.state.settings_status_login.msg = 'Please try again the login'
+      const update_and_reset = (_reset = false) => {
+        if (_reset)
+          ref_init_home.form_mini_login.reset()
+        this.setState()
       }
 
-      const show_alert = () => { this.state.settings_status_login.show = true }
-
-      const update_and_reset = () => { ref_init_home.form_mini_login.reset(); this.setState() }
-
-      console.log('v_home::submit_data() email, psw:', email, psw)
+      console.log('v_home::submit_data() email_value, psw_value:', email_value, psw_value)
       console.log('v_home::submit_data() email_verf, psw_verf, tk_verf:', email_verf, psw_verf, tk_verf)
 
-      if (!email_verf)
-        this.state.settings_alert_email.show = true
-      else
-        this.state.settings_alert_email.show = false
-      if (!psw_verf)
-        this.state.settings_alert_psw.show = true
-      else
-        this.state.settings_alert_psw.show = false
+      const set_verf = (_alert_settings, _show, _msg) => {
+        _alert_settings.show = _show
+        _alert_settings.msg = _msg
+      }
 
+      if (!email_verf) {
+        set_verf(this.state.settings_alert_email, true, _review_email)
+        ref_email.className = _focus_input
+      } else {
+        set_verf(this.state.settings_alert_email, false, _review_email)
+        ref_email.className = _no_focus_input
+      } if (!psw_verf) {        
+        set_verf(this.state.settings_alert_psw, true, _review_psw)
+        ref_psw.className = _focus_input
+      } else {        
+        set_verf(this.state.settings_alert_psw, false, _review_psw)
+        ref_psw.className = _no_focus_input
+      }
       this.setState()
 
       if (email_verf && psw_verf && tk_verf) {
+
         this.setState({ enable_submit_data: false, login_type: _logging })
         console.log('v_home::submit_data() all fine')
-        fetch('/login', {
-          method: 'POST',
-          mode: 'same-origin',
-          headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify({ 'email': email, 'psw': psw, tk: tk })
-        })
-          .then((response) => {
-            if (response.redirected) {
-              window.location.href = '/'
-            } else {
-              response.json()
-                .then((data) => {
-                  const validate = data.response
-                  console.log('v_home::submit_data() data:', data)
-                  console.log('v_home::submit_data() validate:', validate)
-                  if (validate === 'Login ok') {
-                    this.state.login_type = _login_ok
-                  } else if (validate === 'Error L5') {
-                    this.state.settings_status_login.msg = 'Username or password incorrect'
-                    this.state.settings_status_login.class = 'w3-panel w3-pale-yellow w3-display-container w3-border'
-                    this.state.enable_submit_data = true
-                    this.state.login_type = _login                    
-                    show_alert()
-                  } else {
-                    this.state.enable_submit_data = true
-                    this.state.login_type = _login
-                    try_again()
-                    show_alert()
-                  }
-                  update_and_reset()
-                })
-                .catch((err) => {
-                  console.log("Error d3")
-                  this.state.enable_submit_data = true
-                  this.state.login_type = _login
-                  try_again()
-                  show_alert()
-                  update_and_reset()
-                })
-            }
+        t.login(email_value, psw_value)
+          .then((info_user) => {
+            console.log('v_home::submit_data() token_id', info_user)
+            info_user.user.getIdToken()
+              .then((token_string) => {
+                this.state.enable_submit_data = false
+                this.state.login_type = _login_ok
+                document.cookie = `__session=${token_string} ;max-age=3600;`
+                console.log('v_home::submit_data() login correctly')
+                ref_email.className = _no_focus_input
+                ref_psw.className = _no_focus_input
+                update_and_reset(true)
+              })
           })
           .catch((err) => {
-            console.log('Error d3')
-            this.state.enable_submitData = true
+            this.state.enable_submit_data = true
             this.state.login_type = _login
-            try_again()
-            show_alert()
+            const err_code = err.code
+
+            this.state.settings_status_login.class = 'w3-panel w3-pale-yellow w3-display-container w3-border'
+
+            if (err_code === 'auth/invalid-email') {              
+              set_verf(this.state.settings_alert_email, true, _invalid_email)
+              ref_email.className = _focus_input
+              ref_psw.className = _no_focus_input
+            } else if (err_code === 'auth/user-disabled') {
+              set_verf(this.state.settings_status_login, true, _user_disabled)
+              ref_email.className = _no_focus_input
+              ref_psw.className = _no_focus_input
+            } else if (err_code === 'auth/user-not-found') {
+              this.state.settings_status_login.msg = 'User not found'
+              set_verf(this.state.settings_status_login, true, _user_not_found)
+              ref_email.className = _no_focus_input
+              ref_psw.className = _no_focus_input
+            } else if (err_code === 'auth/wrong-password') {
+              set_verf(this.state.settings_alert_psw, true, _wrong_psw)
+              ref_email.className = _no_focus_input
+              ref_psw.className = _focus_input
+            } else {
+              set_verf(this.state.settings_status_login, true, _please_try_again)
+              ref_email.className = _no_focus_input
+              ref_psw.className = _no_focus_input
+            }
+            console.log('v_home::submit_data() error in login:', err)
             update_and_reset()
           })
       }
