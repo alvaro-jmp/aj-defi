@@ -31,7 +31,9 @@ exports.load_home_js_css_etc = (_window) => {
     fallback.ready(() => {
       if (
         typeof validator !== 'undefined'
-        && typeof moment !== 'undefined') {
+        && typeof moment !== 'undefined'
+        && typeof firebase !== 'undefined'
+        && typeof firebase.auth !== 'undefined') {
         resolve('is ready')
       } else
         resolve('is not ready')
