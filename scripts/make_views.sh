@@ -6,7 +6,11 @@ printf "\nTranspilate Views ...\n---------->\n"
 
 rm -rf ./temp && mkdir -p ./temp/res/js-views
 
-#Convert v_dashboard.js to common js incorporating preact for to use in client side rendering and server side rendering
+#Transpilate using babel view path to commonjs for ssr purpose
+
+./node_modules/.bin/babel ./src/view/es6+ --out-dir ./src/view/common_js --config-file ./etc/cfg_babel/custom_view_babelrc.jsonc
+
+#Transpilate v_dashboard.js to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
 if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && cp -v ./src/view/es6+/dashboard/v_dashboard.js ./src/view/es6+/dashboard/index.js && preact build --src ./src/view/es6+/dashboard --dest ./temp/v_dashboard --service-worker false --clean true --no-prerender
 
@@ -17,7 +21,7 @@ cp -v ./temp/v_dashboard/bundle*.js ./temp/res/js-views/ && cp -v ./temp/v_dashb
 if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && bundle_n_polyfills=$(cat ./temp/v_dashboard/index.html | grep -oE '<body>.+</body>') && ssr=$(node ./scripts/ssr_v_dashboard.js) && sed -e "s@<body>.*</body>@$bundle_n_polyfills@" -e "s@/bundle@/assets/js/bundle@" -e "s@/polyfills@/assets/js/polyfills@" -e "s@</script>')@<\\\\\\\\\\\\\/script>')@" -e "s@<body>@<body>$ssr@" ./src/view/es6+/preact_templates/template_v_dashboard.js > ./src/view/es6+/preact_templates/temp && cp -v ./src/view/es6+/preact_templates/temp ./src/view/es6+/preact_templates/template_v_dashboard.js && rm -f ./src/view/es6+/preact_templates/temp
 
 
-#Convert v_home.js to common js incorporating preact for to use in client side rendering and server side rendering
+#Transpilate v_home.js to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
 if [ -f ./src/view/es6+/home/index.js ]; then rm -f ./src/view/es6+/home/index.js; fi && cp -v ./src/view/es6+/home/v_home.js ./src/view/es6+/home/index.js && preact build --src ./src/view/es6+/home --dest ./temp/v_home --service-worker false --clean true --no-prerender
 

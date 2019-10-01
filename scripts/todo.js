@@ -6,6 +6,7 @@ const lengh_init = 0
 const leng_end = (_file) => { return _file.length - 3 }
 const view_path_es6 = '../src/view/es6+'
 const view_path_es6_2 = './src/view/es6+'
+const view_path_common_js = './src/view/common_js'
 const preact_template_folder = './src/view/es6+/preact_templates'
 const settings = { withFileTypes: true }
 const exec_babel = './node_modules/.bin/babel'
@@ -13,7 +14,8 @@ const scripts_folder = '../scripts'
 const temp_folder = './temp'
 const public_folder = './public'
 const etc_folder = './etc'
-
+const f_custom_views_babelrc = './etc/cfg_babel/custom_view_babelrc.jsonc'
+const f_custom_functions_babelrc = './etc/cfg_babel/custom_functions_babelrc.jsonc'
 const list_files_dirs = fs.readdirSync(view_path_es6, settings)
 
 
@@ -89,7 +91,7 @@ function building_views() {
     const delete_index_js = `if [ -f ${view_path_es6_2}/${folder}/index.js ]; then rm -f ${view_path_es6_2}/${folder}/index.js; fi`
 
     return (
-      `#Convert ${file} to common js incorporating preact for to use in client side rendering and server side rendering
+      `#Transpilate ${file} to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
 ${delete_index_js} && cp -v ${view_path_es6_2}/${folder}/${file} ${view_path_es6_2}/${folder}/index.js && preact build --src ${view_path_es6_2}/${folder} --dest ${temp_folder}/${build_folder} --service-worker false --clean true --no-prerender
 
@@ -135,6 +137,10 @@ ${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/in
 
 rm -rf ${temp_folder} && mkdir -p ${temp_folder}/res/js-views
 
+#Transpilate using babel view path to commonjs for ssr purpose
+
+${exec_babel} ${view_path_es6_2} --out-dir ${view_path_common_js} --config-file ${f_custom_views_babelrc}
+
 ${making_views()}`
     )
   }
@@ -175,7 +181,7 @@ printf "\x5cnTranspilate Functions ...\x5cn---------->\x5cn"
 
 cd functions && rm -rf !(node_modules|package.json|package-lock.json) && cd ..
 
-${exec_babel} src --out-dir functions --ignore "./src/node_modules","${view_path_es6_2}/home","${view_path_es6_2}/lib","${view_path_es6_2}/dashboard" --presets=@babel/preset-env
+${exec_babel} src --out-dir functions --config-file ${f_custom_functions_babelrc}
 
 cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/`
 }

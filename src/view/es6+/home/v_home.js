@@ -13,7 +13,7 @@ const [_review_email, _invalid_email] = [
   ['Invalid email']
 ]
 const [_review_psw, _wrong_psw] = [
-  ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters ~`!@#$%^&*()-_+=|}]{["\':;?/>.<,ñáéíóú\\ without space')]
+  ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters ~`!@#$%^&*()-_+=|}]{["\\\':;?/>.<,ñáéíóú\\\\\\ without space')]
   ,
   [_b('Wrong password')]
 ]
@@ -32,44 +32,44 @@ const [_no_focus_input, _focus_input] = [
 
 class v_home extends Component {
 
-  constructor() {
-    super()
-    this.state.div_login_margin_top = w3_margin_top
-    this.state.enable_submit_data = true
-    this.state.all_js_css_etc_loaded = false
-    this.state.settings_status_login = {
+  state = {
+    div_login_margin_top : w3_margin_top,
+    enable_submit_data : true,
+    all_js_css_etc_loaded : false,
+    settings_status_login : {
       class: 'w3-panel w3-pale-yellow w3-display-container w3-border',
       show: false,
       msg: [_b('Please try again the login')]
-    }
-    this.state.settings_alert_email = {
+    },
+    settings_alert_email : {
       class: 'w3-panel w3-pale-yellow w3-display-container w3-border',
       show: false,
       msg: [_b('Please review your email')]
-    }
-    this.state.settings_alert_psw = {
+    },
+    settings_alert_psw : {
       class: 'w3-panel w3-pale-yellow w3-display-container w3-border',
       show: false,
-      msg: ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters ~`!@#$%^&*()-_+=|}]{["\':;?/>.<,ñáéíóú\\ without space')]
-    }
-    this.state.login_type = _login;
-    this.state.ref_init_home = undefined
+      msg: ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters \\\\x7E\\\\x60\\\\x21\\\\x40\\\\x23\\\\x24\\\\x25\\\\x5E\\\\x26\\\\x2A\\\\x28\\\\x29\\\\x2D\\\\x5F\\\\x2B\\\\x3A\\\\x7C\\\\x7D\\\\x5D\\\\x7B\\\\x5B\\\\x22\\\\x5C\\\\x27\\\\x3A\\\\x3B\\\\x3F\\\\x2F\\\\x3E\\\\x2E\\\\x3C\\\\x2Cñáéíóú without space')]
+      //msg: ['The password must have ', _b('between 16 and 1024 characters'), ' it can contain letters, numbers and ', _b('the following special characters ~`!@#$%^&*()-_+:|}]{["\\\':;?/>.<,ñáéíóú\\\\\\ without space')]
+    },
+    login_type : _login,
+    ref_init_home : undefined
   }
 
-  render(props, state) {
+  render = () => {
     return (
       h(vdom_mini_login, {
         _margin_top: this.set_div_login_margin_top(),
-        settings_status_login: state.settings_status_login,
-        settings_email: state.settings_alert_email,
-        settings_psw: state.settings_alert_psw,
-        login_type: state.login_type,
+        settings_status_login: this.state.settings_status_login,
+        settings_email: this.state.settings_alert_email,
+        settings_psw: this.state.settings_alert_psw,
+        login_type: this.state.login_type,
         ref_v_home: this
       }, [])
     )
   }
 
-  componentWillMount(_window) {
+  componentWillMount = () => {
     _fallback.load_home_js_css_etc()
       .then((result) => {
         if (result === 'is ready') {
@@ -81,7 +81,7 @@ class v_home extends Component {
       })
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     console.log('v_home::componentDidMount() this:', this)
 
     const [div_cont, div_login, form_min_login] = this.get_divs_mini_login_n_form()
@@ -95,12 +95,12 @@ class v_home extends Component {
     })
   }
 
-  center_mini_login() {
+  center_mini_login = () => {
     const [div_cont, div_login, form_min_login] = this.get_divs_mini_login_n_form()
     this.center_vertically(div_cont, div_login)
   }
 
-  center_vertically(parent_elem, elem) {
+  center_vertically = (parent_elem, elem) => {
     const half_win_height_size = parseInt(window.innerHeight / 2)
     const half_elem_height_size = parseInt(elem.clientHeight / 2)
 
@@ -120,22 +120,22 @@ class v_home extends Component {
     )
   }
 
-  get_divs_mini_login_n_form() {
+  get_divs_mini_login_n_form = () => {
     const div_cont = document.querySelector('#div_cont_mini_login')
     const div_login = document.querySelector('#div_login')
     const form_min_login = document.querySelector('#form_mini_login')
     return [div_cont, div_login, form_min_login]
   }
 
-  set_div_login_margin_top() {
+  set_div_login_margin_top = () => {
     return `${this.state.div_login_margin_top.toString()}px`
   }
 
-  set_ref_init_home(_ref) {
+  set_ref_init_home = (_ref) => {
     this.state.ref_init_home = _ref
   }
 
-  submit_data(e) {
+  submit_data = (e) => {
     e.preventDefault()
     console.log('v_home::submit_data() this:', this)
     if (this.state.enable_submit_data && this.state.all_js_css_etc_loaded) {

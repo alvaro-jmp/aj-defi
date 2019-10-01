@@ -1,44 +1,22 @@
 "use strict";
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 exports.head = function (_ref) {
-  var _ref2 = _slicedToArray(_ref, 1),
-      x = _ref2[0];
-
+  var x = _ref[0];
   return x;
 };
 
-exports.tail = function (_ref3) {
-  var _ref4 = _toArray(_ref3),
-      xs = _ref4.slice(1);
+exports.tail = function (_ref2) {
+  var xs = _ref2.slice(1);
 
   return xs;
 };
 
-exports.map = function (_ref5, fn) {
-  var _ref6 = _toArray(_ref5),
-      x = _ref6[0],
-      xs = _ref6.slice(1);
+exports.map = function (_ref3, fn) {
+  var x = _ref3[0],
+      xs = _ref3.slice(1);
 
   if (undef(x)) return [];
-  return [fn(x)].concat(_toConsumableArray(map(xs, fn)));
+  return [fn(x)].concat(map(xs, fn));
 };
 
 exports.def = function (x) {
@@ -50,59 +28,66 @@ exports.undef = function (x) {
 };
 
 exports.copy = function (array) {
-  return _toConsumableArray(array);
+  return [].concat(array);
 };
 
-exports.length = function (_ref7) {
-  var _ref8 = _toArray(_ref7),
-      x = _ref8[0],
-      xs = _ref8.slice(1);
+exports.length = function (_ref4, len) {
+  var x = _ref4[0],
+      xs = _ref4.slice(1);
 
-  var len = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  if (len === void 0) {
+    len = 0;
+  }
+
   return def(x) ? length(xs, len + 1) : len;
 };
 
-exports.reverse = function (_ref9) {
-  var _ref10 = _toArray(_ref9),
-      x = _ref10[0],
-      xs = _ref10.slice(1);
+exports.reverse = function (_ref5) {
+  var x = _ref5[0],
+      xs = _ref5.slice(1);
 
-  return def(x) ? [].concat(_toConsumableArray(reverse(xs)), [x]) : [];
+  return def(x) ? [].concat(reverse(xs), [x]) : [];
 };
 
-exports.first = function (_ref11) {
-  var _ref12 = _toArray(_ref11),
-      x = _ref12[0],
-      xs = _ref12.slice(1);
+exports.first = function (_ref6, n) {
+  var x = _ref6[0],
+      xs = _ref6.slice(1);
 
-  var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-  return def(x) && n ? [x].concat(_toConsumableArray(first(xs, n - 1))) : [];
+  if (n === void 0) {
+    n = 1;
+  }
+
+  return def(x) && n ? [x].concat(first(xs, n - 1)) : [];
 };
 
-exports.last = function (xs) {
-  var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+exports.last = function (xs, n) {
+  if (n === void 0) {
+    n = 1;
+  }
+
   return reverse(first(reverse(xs), n));
 };
 
-exports.slice = function (_ref13, i, y) {
-  var _ref14 = _toArray(_ref13),
-      x = _ref14[0],
-      xs = _ref14.slice(1);
+exports.slice = function (_ref7, i, y, curr) {
+  var x = _ref7[0],
+      xs = _ref7.slice(1);
 
-  var curr = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-  return def(x) ? curr === i ? [y, x].concat(_toConsumableArray(slice(xs, i, y, curr + 1))) : [x].concat(_toConsumableArray(slice(xs, i, y, curr + 1))) : [];
+  if (curr === void 0) {
+    curr = 0;
+  }
+
+  return def(x) ? curr === i ? [y, x].concat(slice(xs, i, y, curr + 1)) : [x].concat(slice(xs, i, y, curr + 1)) : [];
 };
 
 exports.isArray = function (x) {
   return Array.isArray(x);
 };
 
-exports.flatten = function (_ref15) {
-  var _ref16 = _toArray(_ref15),
-      x = _ref16[0],
-      xs = _ref16.slice(1);
+exports.flatten = function (_ref8) {
+  var x = _ref8[0],
+      xs = _ref8.slice(1);
 
-  return def(x) ? isArray(x) ? [].concat(_toConsumableArray(flatten(x)), _toConsumableArray(flatten(xs))) : [x].concat(_toConsumableArray(flatten(xs))) : [];
+  return def(x) ? isArray(x) ? [].concat(flatten(x), flatten(xs)) : [x].concat(flatten(xs)) : [];
 };
 
 exports.swap = function (a, i, j) {
@@ -113,40 +98,37 @@ exports.swap = function (a, i, j) {
   });
 };
 
-exports.map = function (_ref17, fn) {
-  var _ref18 = _toArray(_ref17),
-      x = _ref18[0],
-      xs = _ref18.slice(1);
+exports.map = function (_ref9, fn) {
+  var x = _ref9[0],
+      xs = _ref9.slice(1);
 
   if (undef(x)) return [];
-  return [fn(x)].concat(_toConsumableArray(map(xs, fn)));
+  return [fn(x)].concat(map(xs, fn));
 };
 
-exports.filter = function (_ref19, fn) {
-  var _ref20 = _toArray(_ref19),
-      x = _ref20[0],
-      xs = _ref20.slice(1);
+exports.filter = function (_ref10, fn) {
+  var x = _ref10[0],
+      xs = _ref10.slice(1);
 
   if (undef(x)) return [];
 
   if (fn(x)) {
-    return [x].concat(_toConsumableArray(filter(xs, fn)));
+    return [x].concat(filter(xs, fn));
   } else {
-    return _toConsumableArray(filter(xs, fn));
+    return [].concat(filter(xs, fn));
   }
 };
 
-exports.reject = function (_ref21, fn) {
-  var _ref22 = _toArray(_ref21),
-      x = _ref22[0],
-      xs = _ref22.slice(1);
+exports.reject = function (_ref11, fn) {
+  var x = _ref11[0],
+      xs = _ref11.slice(1);
 
   if (undef(x)) return [];
 
   if (!fn(x)) {
-    return [x].concat(_toConsumableArray(reject(xs, fn)));
+    return [x].concat(reject(xs, fn));
   } else {
-    return _toConsumableArray(reject(xs, fn));
+    return [].concat(reject(xs, fn));
   }
 };
 
@@ -154,10 +136,9 @@ exports.partition = function (xs, fn) {
   return [filter(xs, fn), reject(xs, fn)];
 };
 
-exports.reduce = function (_ref23, fn, memo, i) {
-  var _ref24 = _toArray(_ref23),
-      x = _ref24[0],
-      xs = _ref24.slice(1);
+exports.reduce = function (_ref12, fn, memo, i) {
+  var x = _ref12[0],
+      xs = _ref12.slice(1);
 
   if (undef(x)) return memo;
   return reduce(xs, fn, fn(memo, x, i), i + 1);
@@ -197,7 +178,7 @@ exports.reverseArgs = function (fn) {
       args[_key4] = arguments[_key4];
     }
 
-    return fn.apply(void 0, _toConsumableArray(reverse(args)));
+    return fn.apply(void 0, reverse(args));
   };
 };
 
@@ -222,29 +203,36 @@ exports.compose = function () {
     args[_key6] = arguments[_key6];
   }
 
-  return flow.apply(void 0, _toConsumableArray(reverse(args)));
+  return flow.apply(void 0, reverse(args));
 };
 
-exports.min = function (_ref25) {
-  var _ref26 = _toArray(_ref25),
-      x = _ref26[0],
-      xs = _ref26.slice(1);
+exports.min = function (_ref13, result) {
+  var x = _ref13[0],
+      xs = _ref13.slice(1);
 
-  var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Infinity;
+  if (result === void 0) {
+    result = Infinity;
+  }
+
   return def(x) ? x < result ? min(xs, x) : result : result;
 };
 
-exports.max = function (_ref27) {
-  var _ref28 = _toArray(_ref27),
-      x = _ref28[0],
-      xs = _ref28.slice(1);
+exports.max = function (_ref14, result) {
+  var x = _ref14[0],
+      xs = _ref14.slice(1);
 
-  var result = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -Infinity;
+  if (result === void 0) {
+    result = -Infinity;
+  }
+
   return def(x) ? x > result ? max(xs, x) : max(xs, result) : result;
 };
 
-exports.factorial = function (x) {
-  var acum = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+exports.factorial = function (x, acum) {
+  if (acum === void 0) {
+    acum = 1;
+  }
+
   return x ? factorial(x - 1, x * acum) : acum;
 };
 

@@ -39,7 +39,7 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
                 ref_fb.auth().signInWithEmailAndPassword(email, psw).then(function (info_user) {
                   t.log2(c_name, 'Signin succesfull');
                   var uid = info_user.user.uid;
-                  ref_admin_firestore.collection('users').doc("".concat(uid)).get({
+                  ref_admin_firestore.collection('users').doc("" + uid).get({
                     source: 'default'
                   }).then(function (snap2) {
                     if (snap2.exists) {
@@ -54,7 +54,7 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
                           res.cookie('__session', custom_token);
                           t.resjson(res, 'Login ok');
                         })["catch"](function (err) {
-                          t.log2(c_name, "Error generating customToken: ".concat(err, " "));
+                          t.log2(c_name, "Error generating customToken: " + err + " ");
                           t.resjson(res, 'Error L6'); // L6 - Error generating custom token
                         });
                       } else {
@@ -68,8 +68,8 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
                   })["catch"](function (err) {});
                 })["catch"](function (err) {
                   t.log2(c_name, 'Error L5, Error in credential and USER WAS NOT FOUNDED');
-                  t.log2(c_name, "err.code: ".concat(err.code, " "));
-                  t.log2(c_name, "err.message: ".concat(err.message, " "));
+                  t.log2(c_name, "err.code: " + err.code + " ");
+                  t.log2(c_name, "err.message: " + err.message + " ");
                   res.status(401);
                   t.resjson(res, 'Error L5');
                 });
@@ -78,8 +78,8 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
               }
             })["catch"](function (err) {
               t.log2(c_name, 'Error L5, Error in credential and USER WAS NOT FOUNDED');
-              t.log2(c_name, "err.code: ".concat(err.code, " "));
-              t.log2(c_name, "err.message: ".concat(err.message, " "));
+              t.log2(c_name, "err.code: " + err.code + " ");
+              t.log2(c_name, "err.message: " + err.message + " ");
               res.status(401);
               t.resjson(res, 'Error L5');
             });
@@ -87,7 +87,7 @@ exports.get_router = function (ref_fb, ref_fb_admin, p_get_secret, ref_app, ref_
             t.response__data_is_not_correct_type(res, ref_fb);
           }
         } else {
-          console.log(prop_name, "Error d10c, req.body it has more or less than ".concat(length_body, " elements, is only necesary for /login"));
+          console.log(prop_name, "Error d10c, req.body it has more or less than " + length_body + " elements, is only necesary for /login");
           t.user_not_valid(res, ref_fb);
         }
       } else {

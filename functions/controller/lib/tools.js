@@ -56,7 +56,7 @@ exports.response__data_verf_is_not_valid = function (res) {
 };
 
 exports.response__error_getting_tk_sc = function (res, err) {
-  console.log("Error D1, Error in get snaptshot from /secret:".concat(err));
+  console.log("Error D1, Error in get snaptshot from /secret:" + err);
   resjson('Error D1', res);
 };
 
@@ -109,8 +109,10 @@ exports.is_boolean = function (obj) {
   return typeof obj === 'boolean';
 };
 
-exports.int_verf = function (_amount) {
-  var _integers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 4;
+exports.int_verf = function (_amount, _integers) {
+  if (_integers === void 0) {
+    _integers = 4;
+  }
 
   return validator.whitelist(_amount, '0-9,').split(',')[0].length >= _integers;
 };
@@ -127,10 +129,13 @@ exports.cookie_session_verf = function (_session_cookie) {
   return validator.isJWT(_session_cookie);
 };
 
-exports.objId = function () {
-  var rnd = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (r16) {
-    return Math.floor(r16).toString(16);
-  };
+exports.objId = function (rnd) {
+  if (rnd === void 0) {
+    rnd = function rnd(r16) {
+      return Math.floor(r16).toString(16);
+    };
+  }
+
   return rnd(Date.now() / 1000) + ' '.repeat(16).replace(/./g, function () {
     return rnd(Math.random() * 16);
   });
