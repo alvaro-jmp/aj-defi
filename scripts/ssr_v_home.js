@@ -1,5 +1,4 @@
-const { vdom_mini_login } = require('../src/view/es6+/home/components/init_ssr')
-const render = require('preact-render-to-string')
-const margin_top = '16px'
+const v_home = require('../src/view/common_js/home/v_home')
+const render_to_string = require('preact-render-to-string')
 
-console.log(render(vdom_mini_login(margin_top)))
+console.log(render_to_string(v_home.default().render()))
