@@ -1,0 +1,18 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "loose": true        
+      }
+    ]
+  ]
+  ,  
+  "ignore": [
+    "../../src/node_modules",    
+    "../../src/view/common_js",
+    "../../src/view/es6+/dashboard",
+    "../../src/view/es6+/home",
+    "../../src/view/es6+/lib"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "loose": true        
+      }
+    ]
+  ]
+  ,
+  "plugins": [
+    [
+      "@babel/plugin-transform-react-jsx",
+      {
+        "pragma": "h",
+        "pragmaFrag": "Fragment"
+      }
+    ]
+    ,
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ]
+    ,
+    [
+      "@babel/plugin-proposal-object-rest-spread"
+    ]
+    ,
+    [
+      "@babel/plugin-transform-object-assign"
+    ]
+  ],
+  "ignore": [
+    "../../src/node_modules",
+    "../../src/model",
+    "../../src/controller",
+    "../../src/view/es6+/preact_templates",
+    "../../src/view/common_js"
+  ]
+}
