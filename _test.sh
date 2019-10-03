@@ -1,0 +1,1 @@
+./node_modules/.bin/mocha ./test/aj-bank-test.js
