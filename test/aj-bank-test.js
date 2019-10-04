@@ -1,65 +1,37 @@
 require('dotenv').config()
 
-// const { firebaseConfig } = require('../src/model/config_fb')
-// const serviceAccount = require('../src/model/aj-bank-firebase-adminsdk-service-account.json')
-// const test_firebase = require('firebase-functions-test')({
-//   firebaseConfig
-// }, serviceAccount);
-
-const assert = require('assert')
-const functions = require('firebase-functions')
 const chai = require('chai')
-const httpMocks = require('node-mocks-http')
-const express = require('express')
-const sinon = require('sinon')
-const firebasemock = require('firebase-mock')
-const proxyquire = require('proxyquire')
-const expect = require('chai').use(require('sinon-chai')).expect;
-const mocksdk = firebasemock.MockFirebaseSdk(undefined, () => {
-  return mock_auth
-}, () => {
-  return mock_firestore
-})
+const expect = require('chai').use(require('sinon-chai')).expect
+const request = require('supertest')
+const cnt_core = require('../functions/controller/core')
 
-// const http_functions = proxyquire('../src/controller/index', {
-//   'firebase-admin': mocksdk
-// })
+// Firebase settings
+const get_ref_fb = require('../functions/model/get_ref_fb').ctx;
+const get_ref_fb_admin = require('../functions/model/get_ref_fb_admin').ctx;
+const admin_firestore = get_ref_fb_admin.firestore();
+const admin_real_time_db = get_ref_fb_admin.database(); 
 
-describe('firebase http functions', () => {
+// process.env.NODE_ENV = 'production'
 
-  beforeEach(() => {
-    mock_firestore = new firebasemock.MockFirestore()
-    mock_firestore.autoFlush()
-    mock_auth = new firebasemock.MockFirebase()
-    mock_auth.autoFlush()
+describe('localhost server', () => {
+  let app
 
-    if (typeof this.sinon === 'undefined')
-      this.sinon = sinon.createSandbox()
-    else
-      this.sinon.restore()
-  })
-
-
-  it('should succed GET / with status code 200', () => {
-    const request = httpMocks.createRequest({
-      method: 'GET',
-      url: `/`,
-      // params: {
-      //   uid: '123'
-      // }
+  before((done) => {
+    app = cnt_core.get_app(get_ref_fb, get_ref_fb_admin, admin_firestore, admin_real_time_db)
+    app.listen((err) => {
+      if (err) return done(err)
+      return done()
     })
-
-    const response = httpMocks.createResponse()
-    expect(response.statusCode).to.equal(200)
   })
 
-
+  it('should send back 200 status code and Content-Type: text/html; charset=utf-8', (done) => {
+    request(app)
+      .get('/')
+      .set('Content-Type', 'text/html; charset=utf-8')
+      .expect('content-type', /text\/html\; charset\=utf\-8/)
+      .expect(200, (err, res) => {
+        if (err) { return done(err)}
+        return done()
+      })
+  })
 })
-
-// describe('my suite', () => {
-//   it('my test', () => {
-//     // should set the timeout of this test to 1000 ms; instead will fail
-//     this.timeout(1000);
-//     assert.ok(true);
-//   });
-// });
