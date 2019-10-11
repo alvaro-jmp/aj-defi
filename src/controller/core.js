@@ -4,22 +4,19 @@ exports.get_app = (ref_fb, ref_fb_admin, admin_firestore, admin_real_time_db) =>
   const cookieParser = require('cookie-parser')
   const helmet = require('helmet')
   const app = express()
-  const validator = require('validator')
 
   const p_get_secret = require('../model/get_secret').p_get_secret(admin_firestore)
 
   const c_home = require('./c_home')
-  // const p_login = require('./props_f_web_router/p_login')
   const c_login = require('./c_login')
-  // const p_view_dashboard = require('./props_f_web_router/p_view_dashboard')
-  const t = require('./lib/tools')
+  
+  // const t = require('./lib/tools')
 
-  const routes_home = [/^(|\/)$/]
+  // const routes_home = [/^(|\/)$/]
 
-  const routes_dashboard = [/^\/cnp\/dashboard(|\/)$/, /^\/cnp(|\/)$/]
+  // const routes_dashboard = [/^\/cnp\/dashboard(|\/)$/, /^\/cnp(|\/)$/]
 
   const c_name = 'core -->' // controller name
-  // const p_get_secret = admin_firestore.collection('secret').doc('b20b67aa-3593-4836-858b-09f047fb1f82').get({ source: 'default' })
 
   app.use(cookieParser())
   app.use(helmet())
