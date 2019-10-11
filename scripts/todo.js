@@ -17,6 +17,9 @@ const etc_folder = './etc'
 const f_custom_views_babelrc = './etc/cfg_babel/custom_view_babelrc.jsonc'
 const f_custom_functions_babelrc = './etc/cfg_babel/custom_functions_babelrc.jsonc'
 const list_files_dirs = fs.readdirSync(view_path_es6, settings)
+const ignores_folders = (_elem) => {
+  return (_elem.name !== 'lib' && _elem.name !== 'frame' && _elem.name !== 'preact_templates' && _elem.name !== 'test')
+}
 
 
 ///////
@@ -93,7 +96,7 @@ function building_views() {
     return (
       `#Transpilate ${file} to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
-${delete_index_js} && cp -v ${view_path_es6_2}/${folder}/${file} ${view_path_es6_2}/${folder}/index.js && preact build --src ${view_path_es6_2}/${folder} --dest ${temp_folder}/${build_folder} --service-worker false --clean true --no-prerender
+${delete_index_js} && cp -v ${view_path_es6_2}/${folder}/${file} ${view_path_es6_2}/${folder}/index.js && ./node_modules/.bin/preact build --src ${view_path_es6_2}/${folder} --dest ${temp_folder}/${build_folder} --service-worker false --clean true --no-prerender
 
 if [ -f ${etc_folder}/info_licenses_used.txt ] ; then cat ${etc_folder}/info_licenses_used.txt | cat - ${temp_folder}/${build_folder}/bundle*.js > ${temp_folder}/${build_folder}/temp && mv -v ${temp_folder}/${build_folder}/temp ${temp_folder}/${build_folder}/bundle*.js ; fi 
 
@@ -109,7 +112,7 @@ ${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/in
 
     const view_to_common_js = list_files_dirs.filter(
       elem => (
-        elem.isDirectory() && (elem.name !== 'lib' && elem.name !== 'frame' && elem.name !== 'preact_templates')
+        elem.isDirectory() && (ignores_folders(elem))
       )
     ).map(
       (dir) => {
@@ -133,7 +136,7 @@ ${delete_index_js} && bundle_n_polyfills=$(cat ${temp_folder}/${build_folder}/in
     return (
       // `${installing_missing_modules()}
 
-`#Delete temp (temporal) folder and create new one and two subfolders
+      `#Delete temp (temporal) folder and create new one and two subfolders
 
 rm -rf ${temp_folder} && mkdir -p ${temp_folder}/res/js-views
 
@@ -179,10 +182,14 @@ printf "\x5cnTranspilate Functions ...\x5cn---------->\x5cn"
 
 #removing older files and folders except node_modules, package.json, package-lock.json
 
-cd functions && rm -rf !(node_modules|package.json|package-lock.json) && cd ..
+cd ./functions
+rm -rf !(node_modules|package.json|package-lock.json)
+cd .. 
 
-${exec_babel} src --out-dir functions --config-file ${f_custom_functions_babelrc}
+#transpilate src folder to function accoring to configuration on .etc/cfg_babel/custom_functions_babelrc.jsonc
+${exec_babel} ./src --out-dir ./functions --config-file ${f_custom_functions_babelrc}
 
+#copy service account information file to functions/model
 cp -v src/model/aj-bank-firebase-adminsdk-service-account.json functions/model/`
 }
 
@@ -194,7 +201,7 @@ const serving =
   `#!/bin/bash
 printf "\x5cnServing ...\x5cn---------->\x5cn"
 
-firebase serve --only hosting,functions --port 5000 --host 0.0.0.0`
+./node_modules/.bin/firebase serve --only hosting,functions --port 5000 --host 0.0.0.0`
 
 ///////
 // CODE ETC
