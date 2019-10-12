@@ -1,37 +1,114 @@
 require('dotenv').config()
 
+const validator = require('validator')
+const puppeteer = require('puppeteer')
+const express = require('express')
 const chai = require('chai')
-const expect = require('chai').use(require('sinon-chai')).expect
-const request = require('supertest')
+const expect = chai.expect
 const cnt_core = require('../functions/controller/core')
 
 // Firebase settings
 const get_ref_fb = require('../functions/model/get_ref_fb').ctx;
 const get_ref_fb_admin = require('../functions/model/get_ref_fb_admin').ctx;
 const admin_firestore = get_ref_fb_admin.firestore();
-const admin_real_time_db = get_ref_fb_admin.database(); 
+const admin_real_time_db = get_ref_fb_admin.database();
 
 // process.env.NODE_ENV = 'production'
 
-describe('localhost server', () => {
+const get_browser = puppeteer.launch({ headless: true })
+const content_type_text_html_utf_8 = 'text/html; charset=utf-8'
+
+describe('aj-bank server', () => {
+
   let app
+  let browser
+  let page
 
   before((done) => {
-    app = cnt_core.get_app(get_ref_fb, get_ref_fb_admin, admin_firestore, admin_real_time_db)
-    app.listen((err) => {
+    app = express()
+    app.use(express.static('public'))
+    app.use(cnt_core.get_app(get_ref_fb, get_ref_fb_admin, admin_firestore, admin_real_time_db))
+
+    app.listen(3000, (err) => {
       if (err) return done(err)
-      return done()
+      done()
     })
   })
 
-  it('should send back 200 status code and Content-Type: text/html; charset=utf-8', (done) => {
-    request(app)
-      .get('/')
-      .set('Content-Type', 'text/html; charset=utf-8')
-      .expect('content-type', /text\/html\; charset\=utf\-8/)
-      .expect(200, (err, res) => {
-        if (err) { return done(err)}
-        return done()
-      })
+  before(async () => {
+    browser = await get_browser
+    page = await browser.newPage()
   })
+
+
+  it(`should send back 200 status code and Content-Type: ${content_type_text_html_utf_8}`, async () => {
+    const response = await page.goto('http://localhost:3000/', { waitUntil: 'networkidle2' })
+    expect(response).to.be.an('object')
+    expect(response._status).to.be.equal(200)
+    expect(response.headers()['content-type']).to.be.equal(content_type_text_html_utf_8)
+  })
+
+  // it('works', async() => {
+  //   const content = await page.evaluate(() => document.body.innerHTML)
+  //   expect(content).to.be.an('string')
+  // })
+
+  describe('user login', () => {
+
+    const wrong_email = 'dajlhdlajdlasjdalskjdlajsdl'
+    const wrong_psw = 'daldkjalj dlajd lajldjald ahsdkadads jasdkj'
+
+    it(`should to make incorrect login with email: ${wrong_email} and psw: ${wrong_psw}`, (done) => {
+
+      (async () => {
+        await page.type('input#i_email', 'dlkajldjladlajdlsdl')
+        await page.type('input#i_psw', 'dljaldjaldk jalsdjlajda djaldadha aksdsalkdasd')
+        await page.click('button#login_button')
+        await page.waitForSelector('#div_alert_email', { timeout: 100 })
+        const response_alert_email = await page.evaluate(() => document.querySelector('#div_alert_email').innerHTML)
+        const verf_response_alert_email = validator.matches(response_alert_email,/.*(Please review your email|Invalid email).*/ )
+        expect(verf_response_alert_email).to.be.true
+        const response_alert_psw = await page.evaluate(() => document.querySelector('#div_alert_psw').innerHTML)
+        const verf_response_alert_psw = validator.matches(response_alert_psw,/.*(The password must have|Wrong password).*/ )
+        expect(verf_response_alert_psw).to.be.true
+        done()
+      })();
+    })
+
+    it('should to make correct a login', (done) => {
+
+      const get_messages = (msg) => {
+        const _txt = msg.text()
+        
+        // console.log(msg)
+        
+        const remove_listener = () => {
+          page.removeListener('console', get_messages)
+        }
+
+        if (_txt === 'v_home::submit_data() login correctly') {
+          remove_listener()
+          done()
+        }
+
+        else if (validator.matches(_txt, /.*v\_home\:\:submit\_data\(\) error in login\:.*/)) {
+          remove_listener()
+          done(_txt)
+        }
+
+      }
+
+      page.on('console', get_messages);
+
+      (async () => {
+        await page.evaluate(() => document.querySelector('#form_mini_login').reset())
+        await page.type('input#i_email', process.env.USER_TEST_EMAIL)
+        await page.type('input#i_psw', process.env.USER_TEST_PSW)
+        await page.click('button#login_button')
+      })();
+
+    })
+  })
+
 })
+
