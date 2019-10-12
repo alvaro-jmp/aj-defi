@@ -12,7 +12,7 @@ rm -rf ./temp && mkdir -p ./temp/res/js-views
 
 #Transpilate v_dashboard.js to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
-if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && cp -v ./src/view/es6+/dashboard/v_dashboard.js ./src/view/es6+/dashboard/index.js && preact build --src ./src/view/es6+/dashboard --dest ./temp/v_dashboard --service-worker false --clean true --no-prerender
+if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboard/index.js; fi && cp -v ./src/view/es6+/dashboard/v_dashboard.js ./src/view/es6+/dashboard/index.js && ./node_modules/.bin/preact build --src ./src/view/es6+/dashboard --dest ./temp/v_dashboard --service-worker false --clean true --no-prerender
 
 if [ -f ./etc/info_licenses_used.txt ] ; then cat ./etc/info_licenses_used.txt | cat - ./temp/v_dashboard/bundle*.js > ./temp/v_dashboard/temp && mv -v ./temp/v_dashboard/temp ./temp/v_dashboard/bundle*.js ; fi 
 
@@ -23,7 +23,7 @@ if [ -f ./src/view/es6+/dashboard/index.js ]; then rm -f ./src/view/es6+/dashboa
 
 #Transpilate v_home.js to commonjs minified using preact cli for to use in client side rendering and get source maps, polyfills, etc
 
-if [ -f ./src/view/es6+/home/index.js ]; then rm -f ./src/view/es6+/home/index.js; fi && cp -v ./src/view/es6+/home/v_home.js ./src/view/es6+/home/index.js && preact build --src ./src/view/es6+/home --dest ./temp/v_home --service-worker false --clean true --no-prerender
+if [ -f ./src/view/es6+/home/index.js ]; then rm -f ./src/view/es6+/home/index.js; fi && cp -v ./src/view/es6+/home/v_home.js ./src/view/es6+/home/index.js && ./node_modules/.bin/preact build --src ./src/view/es6+/home --dest ./temp/v_home --service-worker false --clean true --no-prerender
 
 if [ -f ./etc/info_licenses_used.txt ] ; then cat ./etc/info_licenses_used.txt | cat - ./temp/v_home/bundle*.js > ./temp/v_home/temp && mv -v ./temp/v_home/temp ./temp/v_home/bundle*.js ; fi 
 
