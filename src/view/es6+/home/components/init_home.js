@@ -14,7 +14,7 @@ class mini_login extends Component {
           form({ ref: c => this.form_mini_login = c, id: 'form_mini_login', noValidate: '' }, [
             
             // alert status login
-            div({ id: 'div_alert_email', class: this.props.settings_status_login.class, style: { display: this.props.settings_status_login.show ? 'block' : 'none' } }, [
+            div({ id: 'div_alert_status_login', class: this.props.settings_status_login.class, style: { display: this.props.settings_status_login.show ? 'block' : 'none' } }, [
               span({
                 onclick: () => this.disable_alert(this.props.settings_status_login),
                 class: 'w3-button w3-large w3-display-topright'
@@ -27,7 +27,7 @@ class mini_login extends Component {
             //title
             h1({ class: 'w3-jumbo w3-center', style: { 'font-family': '\'Manjari\', sans-serif' } }, ['aj-bank']),
 
-            // email
+            // email  
             h1({}, ['Email']),
             // alert email
             div({ id: 'div_alert_email', class: this.props.settings_email.class, style: { display: this.props.settings_email.show ? 'block' : 'none' } }, [
@@ -85,7 +85,7 @@ class mini_login extends Component {
 
   login_selector = (_type) => {  
 
-    const _button = (_msg, _class) => { return button({ class: _class, type: 'submit' }, [_msg])}
+    const _button = (_msg, _class) => { return button({ id: 'login_button', class: _class, type: 'submit' }, [_msg])}
     
     if (_type === _login)
       return _button('Log in', 'w3-button w3-center w3-block w3-blue w3-hover-teal w3-section w3-padding w3-large')

@@ -73,7 +73,7 @@ function (_Component) {
         noValidate: ''
       }, [// alert status login
       div({
-        id: 'div_alert_email',
+        id: 'div_alert_status_login',
         "class": _this.props.settings_status_login["class"],
         style: {
           display: _this.props.settings_status_login.show ? 'block' : 'none'
@@ -91,7 +91,7 @@ function (_Component) {
         style: {
           'font-family': '\'Manjari\', sans-serif'
         }
-      }, ['aj-bank']), // email
+      }, ['aj-bank']), // email  
       h1({}, ['Email']), // alert email
       div({
         id: 'div_alert_email',
@@ -173,6 +173,7 @@ function (_Component) {
     _this.login_selector = function (_type) {
       var _button = function _button(_msg, _class) {
         return button({
+          id: 'login_button',
           "class": _class,
           type: 'submit'
         }, [_msg]);
