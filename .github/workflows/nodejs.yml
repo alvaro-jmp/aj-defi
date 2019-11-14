@@ -1,0 +1,19 @@
+name: Node CI
+
+on: 
+  push:
+    branches:
+      - master
+
+jobs:
+  build_n_test:
+    name: Building and testing the proyect aj-bank.
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install
+      - run: source ./make build
+      - run: source ./make test
