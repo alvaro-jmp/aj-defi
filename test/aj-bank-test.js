@@ -1,3 +1,4 @@
+const convert_str = require('amrhextotext')
 const validator = require('validator')
 const puppeteer = require('puppeteer')
 const express = require('express')
@@ -55,6 +56,8 @@ describe('aj-bank server', () => {
 
     const wrong_email = 'dajlhdlajdlasjdalskjdlajsdl'
     const wrong_psw = 'daldkjalj dlajd lajldjald ahsdkadads jasdkj'
+    const correct_email = process.env.AJ_BANK_USER_TEST_EMAIL_00
+    const correct_psw = convert_str.hexToUtf8(process.env.AJ_BANK_USER_TEST_PSW_00)
 
     it(`should to make incorrect login with email: ${wrong_email} and psw: ${wrong_psw}`, (done) => {
 
@@ -100,8 +103,8 @@ describe('aj-bank server', () => {
 
       (async () => {
         await page.evaluate(() => document.querySelector('#form_mini_login').reset())
-        await page.type('input#i_email', process.env.AJ_BANK_USER_TEST_EMAIL_00)
-        await page.type('input#i_psw', process.env.AJ_BANK_USER_TEST_PSW_00)
+        await page.type('input#i_email', correct_email)
+        await page.type('input#i_psw', correct_psw)
         await page.click('button#login_button')
       })();
 
