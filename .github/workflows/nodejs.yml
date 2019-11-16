@@ -9,6 +9,11 @@ jobs:
   build_n_test:
     name: Building and testing the proyect aj-bank.
     runs-on: ubuntu-18.04
+    env: 
+      AJ_BANK_FIREBASE_ADMINSDK_SERVICE_ACCOUNT: ${{ secrets.AJ_BANK_FIREBASE_ADMINSDK_SERVICE_ACCOUNT }}
+      AJ_BANK_FIREBASE_CONFIG: ${{ secrets.AJ_BANK_FIREBASE_CONFIG }}
+      AJ_BANK_USER_TEST_EMAIL_00: ${{ secrets.AJ_BANK_USER_TEST_EMAIL_00 }}
+      AJ_BANK_USER_TEST_PSW_00: ${{ secrets.AJ_BANK_USER_TEST_PSW_00 }}
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
