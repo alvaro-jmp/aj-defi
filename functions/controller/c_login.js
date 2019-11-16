@@ -8,7 +8,7 @@ var csrf = require('csrf');
 
 var c_name = 'c_login -->'; // controller name  
 
-var t = require('./lib/tools');
+var t = require('../lib/tools');
 
 var length_body = 3;
 

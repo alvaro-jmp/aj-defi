@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const csrf = require('csrf')
 const c_name = 'c_login -->' // controller name  
-const t = require('./lib/tools')
+const t = require('../lib/tools')
 const length_body = 3
 const validator = require('validator')
 
