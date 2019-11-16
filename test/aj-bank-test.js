@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const validator = require('validator')
 const puppeteer = require('puppeteer')
 const express = require('express')
@@ -61,8 +59,8 @@ describe('aj-bank server', () => {
     it(`should to make incorrect login with email: ${wrong_email} and psw: ${wrong_psw}`, (done) => {
 
       (async () => {
-        await page.type('input#i_email', 'dlkajldjladlajdlsdl')
-        await page.type('input#i_psw', 'dljaldjaldk jalsdjlajda djaldadha aksdsalkdasd')
+        await page.type('input#i_email', wrong_email)
+        await page.type('input#i_psw', wrong_psw)
         await page.click('button#login_button')
         await page.waitForSelector('#div_alert_email', { timeout: 100 })
         const response_alert_email = await page.evaluate(() => document.querySelector('#div_alert_email').innerHTML)
@@ -102,8 +100,8 @@ describe('aj-bank server', () => {
 
       (async () => {
         await page.evaluate(() => document.querySelector('#form_mini_login').reset())
-        await page.type('input#i_email', process.env.USER_TEST_EMAIL)
-        await page.type('input#i_psw', process.env.USER_TEST_PSW)
+        await page.type('input#i_email', process.env.AJ_BANK_USER_TEST_EMAIL_00)
+        await page.type('input#i_psw', process.env.AJ_BANK_USER_TEST_PSW_00)
         await page.click('button#login_button')
       })();
 
