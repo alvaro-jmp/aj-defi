@@ -20,6 +20,7 @@ const content_type_text_html_utf_8 = 'text/html; charset=utf-8'
 describe('aj-bank server', () => {
 
   let app
+  let server
   let browser
   let page
 
@@ -28,7 +29,7 @@ describe('aj-bank server', () => {
     app.use(express.static('public'))
     app.use(cnt_core.get_app(get_ref_fb, get_ref_fb_admin, admin_firestore, admin_real_time_db))
 
-    app.listen(3000, (err) => {
+    server = app.listen(3000, (err) => {
       if (err) return done(err)
       done()
     })
@@ -89,11 +90,13 @@ describe('aj-bank server', () => {
 
         if (_txt === 'v_home::submit_data() login correctly') {
           remove_listener()
+          server.close()
           done()
         }
 
         else if (validator.matches(_txt, /.*v\_home\:\:submit\_data\(\) error in login\:.*/)) {
           remove_listener()
+          server.close()
           done(_txt)
         }
 
