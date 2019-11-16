@@ -17,6 +17,7 @@
 		"@babel/plugin-transform-object-assign": "^7.2.0",
 		"@babel/plugin-transform-react-jsx": "^7.3.0",
 		"@babel/preset-env": "^7.6.0",
+		"amrhextotext": "^1.1.1",
 		"chai": "^4.2.0",
 		"dotenv": "^8.1.0",
 		"express": "^4.17.1",
