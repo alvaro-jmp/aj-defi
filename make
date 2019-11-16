@@ -23,7 +23,7 @@ then
     #Test (linux and (cywing and wsl) )
 elif [ "$args" = "test" ]
 then
-    ./node_modules/.bin/mocha --timeout 999999 ./test/aj-bank-test.js
+    ./node_modules/.bin/mocha --exit --timeout 999999 ./test/aj-bank-test.js
     
     #For bad arguments case
 else
