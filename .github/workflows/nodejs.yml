@@ -14,11 +14,13 @@ jobs:
       AJ_BANK_FIREBASE_CONFIG: ${{ secrets.AJ_BANK_FIREBASE_CONFIG }}
       AJ_BANK_USER_TEST_EMAIL_00: ${{ secrets.AJ_BANK_USER_TEST_EMAIL_00 }}
       AJ_BANK_USER_TEST_PSW_00: ${{ secrets.AJ_BANK_USER_TEST_PSW_00 }}
+      TEST_00: ${{ secrets.TEST_00 }}
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '10.x'
+      - run: echo $TEST_00
       - run: npm install
       - run: source ./make build
       - run: source ./make test
