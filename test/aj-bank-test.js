@@ -14,7 +14,18 @@ const admin_real_time_db = get_ref_fb_admin.database();
 
 // process.env.NODE_ENV = 'production'
 
-const get_browser = puppeteer.launch({ headless: true })
+// https://github.com/buildkite/docker-puppeteer/blob/master/example/integration-tests/index.test.js
+const get_browser = puppeteer.launch({ 
+  headless: true
+  // ,
+  // executablePath: '/usr/bin/google-chrome'  
+  ,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage'
+  ]
+})
 const content_type_text_html_utf_8 = 'text/html; charset=utf-8'
 
 describe('aj-bank server', () => {
