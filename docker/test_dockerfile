@@ -1,0 +1,31 @@
+#For only test purpose
+
+FROM ubuntu:bionic
+
+ARG AJ_BANK_FIREBASE_ADMINSDK_SERVICE_ACCOUNT
+ARG AJ_BANK_FIREBASE_CONFIG
+ARG AJ_BANK_USER_TEST_EMAIL_00
+ARG AJ_BANK_USER_TEST_PSW_00
+ARG AJ_BANK_WORKSPACE_HOST
+
+ENV AJ_BANK_FIREBASE_ADMINSDK_SERVICE_ACCOUNT=$AJ_BANK_FIREBASE_ADMINSDK_SERVICE_ACCOUNT \
+  AJ_BANK_FIREBASE_CONFIG=$AJ_BANK_FIREBASE_CONFIG \
+  AJ_BANK_USER_TEST_EMAIL_00=$AJ_BANK_USER_TEST_EMAIL_00 \
+  AJ_BANK_USER_TEST_PSW_00=$AJ_BANK_USER_TEST_PSW_00 \
+  AJ_BANK_WORKSPACE_HOST=$AJ_BANK_WORKSPACE_HOST \
+  AJ_BANK_WORKDIR=/home/devops/aj_bank \
+  HOME_DEVOPS=/home/devops \
+  USER_DEVOPS=devops \
+  CONFIG_NVM='export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' \
+  CONFIG_CHROME_DEVEL_SANDBOX='export CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox'  
+
+# Create an $USER_DEVOPS
+RUN groupadd -r pptruser \
+  # && adduser -r -g pptruser -G audio,video ${USER_DEVOPS} \
+  && useradd -s /bin/bash --create-home -r -g pptruser -G audio,video ${USER_DEVOPS} \
+  && passwd -d $USER_DEVOPS
+
+  # && adduser --gecos '' -G audio,video -g $USER_DEVOPS pptuser -disabled-password \
+  # && passwd -d $USER_DEVOPS
+  
+  
