@@ -32,6 +32,6 @@
     "preact-render-to-string": "^4.1.0",
     "puppeteer": "^1.20.0",
     "sinon": "^7.5.0",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   }
 }
