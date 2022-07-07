@@ -22,7 +22,7 @@
     "firebase-admin": "^8.5.0",
     "firebase-functions": "^3.2.0",
     "helmet": "^3.21.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "preact": "^8.5.2",
     "preact-render-to-string": "^4.1.0",
     "validator": "^11.1.0"
